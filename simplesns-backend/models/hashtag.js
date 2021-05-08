@@ -25,6 +25,7 @@ module.exports = class Hashtag extends (
     );
   }
   static associate(db) {
+    //N:M = posts : hashtags through table name PostHashtag
     db.Hashtag.belongsToMany(db.Post, { through: "PostHashtag" });
   }
 };
