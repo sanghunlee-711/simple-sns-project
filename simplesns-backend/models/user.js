@@ -43,5 +43,20 @@ module.exports = class User extends (
     );
   }
 
-  static associate(db) {}
+  static associate(db) {
+    //1:N = users: posts
+    db.User.hasMany(db.Post);
+    //N:M = following : follower
+    db.User.belongsToMany(db.User, {
+      foreignKey: "followingId",
+      as: "Followers",
+      through: "Follow",
+    });
+
+    db.User.belongsToMany(db.User, {
+      foreignKey: "followerId",
+      as: "Followings",
+      through: "Follow",
+    });
+  }
 };
