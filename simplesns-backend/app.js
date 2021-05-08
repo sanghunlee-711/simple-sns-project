@@ -50,4 +50,6 @@ app.use((req, res, next) => {
   next(error);
 });
 
-module.exports = app;
+app.listen(app.get("port"), () => {
+  console.log(app.get("port"), "에서 듣고 있다고 한다");
+});
