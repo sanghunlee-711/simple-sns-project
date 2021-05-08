@@ -22,3 +22,15 @@
 - Node.js
 - Express
 - Sequelize
+
+### DataBase
+
+- MySQL
+
+<hr>
+
+### ERD(Entity Relationship Diagram)
+
+<img src ="./static/erd.png" alt ="Entity Relationship Diagram">
+
+<hr>
