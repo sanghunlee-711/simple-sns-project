@@ -57,3 +57,5 @@ router.get("/logout", isLoggedIn, (req, res) => {
   req.session.destroy();
   res.redirect("/", 200);
 });
+
+module.exports = router;
