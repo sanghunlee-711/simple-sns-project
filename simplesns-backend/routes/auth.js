@@ -12,12 +12,12 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
   try {
     const exUser = await User.findOne({ where: { email } });
 
-    //가입된 경우 에러 메시지 보내주자
     if (exUser) {
       return res.json({ status: 405, message: "이미 가입된 회원입니다." });
     }
 
     const hash = await bcrypt.hash(password, 15);
+
     await User.create({
       email,
       nick,
@@ -29,4 +29,31 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
     console.error(error);
     return next(error);
   }
+});
+
+router.post("/login", isNotLoggedIn, (req, res, next) => {
+  passport.authenticate("localStrategy", (authError, user, info) => {
+    if (authError) {
+      console.error(authError);
+      return next(authError);
+    }
+
+    if (!user) {
+      return res.json({ status: 404, message: "존재하지 않는 회원입니다." });
+    }
+
+    return req.login(user, (loginError) => {
+      if (loginError) {
+        return next(loginError);
+      }
+
+      return res.redirect("/", 200);
+    });
+  })(req, res, next);
+});
+
+router.get("/logout", isLoggedIn, (req, res) => {
+  req.logout();
+  req.session.destroy();
+  res.redirect("/", 200);
 });

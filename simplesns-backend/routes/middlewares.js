@@ -12,6 +12,6 @@ exports.isNotLoggedIn = (req, res, next) => {
     next();
   } else {
     //로그인한 상태면 302를 보내고 프론트에서 처리하도록 예정
-    res.redirect("/", 302);
+    res.json({ status: 403, message: "로그인이 되어 있습니다." });
   }
 };
