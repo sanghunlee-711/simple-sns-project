@@ -8,7 +8,7 @@ export default function Login() {
   const history = useHistory();
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
-
+  const [userInfo, setUserInfo] = useState({ nick: "", id: "", provider: "" });
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === "id") {
@@ -28,6 +28,13 @@ export default function Login() {
       withCredentials: true,
     };
     const response = await axios.post(url, setting);
+    const { nick, email, provider } = response.data;
+    setUserInfo({
+      nick,
+      id: email,
+      provider,
+    });
+
     console.log(response);
 
     return;
@@ -36,6 +43,15 @@ export default function Login() {
   return (
     <CompoentWrapper>
       <h1>Login</h1>
+      {userInfo.nick.length > 1 ? (
+        <div>
+          <span>{userInfo.nick}</span>
+          <span>{userInfo.provider}</span>
+          <span>{userInfo.id}</span>
+        </div>
+      ) : (
+        ""
+      )}
       <InputWrapper>
         <input name="id" value={id} onChange={(e) => handleInputChange(e)} />
         <input
