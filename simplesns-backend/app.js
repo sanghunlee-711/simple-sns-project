@@ -9,10 +9,13 @@ dotenv.config(); //for setting .env file
 const pageRouter = require("./routes/page"); //setting for pageRouter ;
 const authRouter = require("./routes/auth");
 
+const passportConfig = require("./passport");
 const { sequelize } = require("./models");
 const passport = require("passport");
 
 const app = express();
+passportConfig();
+
 app.set("port", process.env.PORT || 1500);
 sequelize
   .sync({ force: false })

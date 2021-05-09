@@ -1,17 +1,15 @@
 const express = require("express");
+const cors = require("cors");
 const { Post, User, Hashtag } = require("../models");
 
 const router = express.Router();
 
 //cors 처리
-router.use(async (req, res, next) => {
-  // const url = new URL(req.get("origin"));
-  next();
-  // cors({
-  //   origin: req.get("origin"),
-  //   credentials: true,
-  // })(req, res, next);
-});
+router.use(
+  cors({
+    credential: true,
+  })
+);
 
 router.get("/", async (req, res, next) => {
   try {
