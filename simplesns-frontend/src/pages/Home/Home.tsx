@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../../config/config.json";
 
 export default function Home() {
-  const [data, setData] = useState({});
+  const [data, setData] = useState([]);
   useEffect(() => {
     getData();
   }, []);
@@ -23,5 +23,12 @@ export default function Home() {
     }
   };
 
-  return <div>This is Home Comp.</div>;
+  return (
+    <div>
+      <div>This is Home Comp.</div>
+      {data.map((el) => (
+        <div>안녕</div>
+      ))}
+    </div>
+  );
 }

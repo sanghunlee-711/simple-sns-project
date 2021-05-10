@@ -28,34 +28,13 @@ export default function Login() {
       withCredentials: true,
     };
     const response = await axios.post(url, setting);
+    if (response.data.code !== 200) {
+      return alert(`${response.data.code} 에러가 발생했습니다.`);
+    }
     console.log(response);
     const { token, nick, email } = response.data;
-    // setUserInfo({
-    //   nick,
-    //   id: email,
-    //   provider,
-    // });
     sessionStorage.setItem("token", token);
-    sessionStorage.setItem("email", email);
     sessionStorage.setItem("nick", nick);
-
-    return;
-  };
-
-  const doLogOut = async (): Promise<void> => {
-    if (sessionStorage.getItem("token")) {
-      sessionStorage.removeItem("token");
-      const url = `${BASE_URL}/auth/logout`;
-      const setting = {
-        email: sessionStorage.getItem("is"),
-        password: sessionStorage.getItem("token"),
-        withCredentials: true,
-      };
-      const response = await axios.get(url);
-      console.log(response);
-    } else {
-      alert("로그인 상태가 아닙니다.");
-    }
 
     return history.push("/");
   };
@@ -88,9 +67,9 @@ export default function Login() {
         <button name="join" onClick={() => history.push("/join")}>
           회원가입
         </button>
-        <button name="join" onClick={() => doLogOut()}>
+        {/* <button name="join" onClick={() => doLogOut()}>
           로그아웃
-        </button>
+        </button> */}
       </ButtonWrapper>
     </CompoentWrapper>
   );
