@@ -28,22 +28,42 @@ export default function Login() {
       withCredentials: true,
     };
     const response = await axios.post(url, setting);
-    const { nick, email, provider } = response.data;
-    setUserInfo({
-      nick,
-      id: email,
-      provider,
-    });
-
     console.log(response);
+    const { token, nick, email } = response.data;
+    // setUserInfo({
+    //   nick,
+    //   id: email,
+    //   provider,
+    // });
+    sessionStorage.setItem("token", token);
+    sessionStorage.setItem("email", email);
+    sessionStorage.setItem("nick", nick);
 
     return;
+  };
+
+  const doLogOut = async (): Promise<void> => {
+    if (sessionStorage.getItem("token")) {
+      sessionStorage.removeItem("token");
+      const url = `${BASE_URL}/auth/logout`;
+      const setting = {
+        email: sessionStorage.getItem("is"),
+        password: sessionStorage.getItem("token"),
+        withCredentials: true,
+      };
+      const response = await axios.get(url);
+      console.log(response);
+    } else {
+      alert("로그인 상태가 아닙니다.");
+    }
+
+    return history.push("/");
   };
 
   return (
     <CompoentWrapper>
       <h1>Login</h1>
-      {userInfo.nick.length > 1 ? (
+      {/* {userInfo.nick.length > 1 ? (
         <div>
           <span>{userInfo.nick}</span>
           <span>{userInfo.provider}</span>
@@ -51,7 +71,7 @@ export default function Login() {
         </div>
       ) : (
         ""
-      )}
+      )} */}
       <InputWrapper>
         <input name="id" value={id} onChange={(e) => handleInputChange(e)} />
         <input
@@ -67,6 +87,9 @@ export default function Login() {
         </button>
         <button name="join" onClick={() => history.push("/join")}>
           회원가입
+        </button>
+        <button name="join" onClick={() => doLogOut()}>
+          로그아웃
         </button>
       </ButtonWrapper>
     </CompoentWrapper>

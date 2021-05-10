@@ -27,6 +27,7 @@ export default function Join() {
 
   const doJoin = async () => {
     const url = `${config.BASE_URL}/auth/join`;
+
     console.log(url);
     const setting = {
       email: id,

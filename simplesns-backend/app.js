@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const path = require("path");
 const session = require("express-session");
 const dotenv = require("dotenv");
+const cors = require("cors");
 
 dotenv.config(); //for setting .env file
 const pageRouter = require("./routes/page"); //setting for pageRouter ;
@@ -24,6 +25,14 @@ sequelize
   })
   .catch((err) => console.error(err));
 
+//cors 처리
+app.use(async (req, res, next) => {
+  cors({
+    origin: req.get("origin"),
+    credential: true,
+  })(req, res, next);
+});
+
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
@@ -36,7 +45,7 @@ app.use(
     secret: process.env.COOKIE_SECRET,
     cookie: {
       httpOnly: true,
-      secure: false,
+      secure: true,
     },
   })
 );
