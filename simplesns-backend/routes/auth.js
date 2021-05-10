@@ -1,9 +1,17 @@
 const express = require("express");
 const passport = require("passport");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const cors = require("cors");
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const User = require("../models/user");
 const router = express.Router();
+
+router.use(async (req, res, next) => {
+  cors({
+    credential: true,
+  })(req, res, next);
+});
 
 router.post("/join", isNotLoggedIn, async (req, res, next) => {
   //front - body -> {email: "...", nick: "...", password: "..."}
@@ -13,49 +21,92 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
     const exUser = await User.findOne({ where: { email } });
 
     if (exUser) {
-      return res.json({ status: 405, message: "이미 가입된 회원입니다." });
+      return res.status(302).send({ error: "이미 가입된 회원입니다." });
+    } else {
+      const hash = await bcrypt.hash(password, 15);
+
+      await User.create({
+        email,
+        nick,
+        password: hash,
+      });
+      return res.redirect(200, "/");
     }
-
-    const hash = await bcrypt.hash(password, 15);
-
-    await User.create({
-      email,
-      nick,
-      password: hash,
-    });
-
-    return res.redirect("/", 200);
   } catch (error) {
     console.error(error);
     return next(error);
   }
 });
 
-router.post("/login", isNotLoggedIn, (req, res, next) => {
-  passport.authenticate("localStrategy", (authError, user, info) => {
-    if (authError) {
-      console.error(authError);
-      return next(authError);
-    }
+// router.post("/login", isNotLoggedIn, (req, res, next) => {
+//   passport.authenticate("local", { session: true }, (authError, user, info) => {
+// if (authError) {
+//   //authErr값이 존재한다면 실패한 것이다
+//   console.error(authError);
+//   return next(authError);
+// }
 
-    if (!user) {
-      return res.json({ status: 404, message: "존재하지 않는 회원입니다." });
-    }
+//     if (!user) {
+//       return res.status(404).json({ message: "존재하지 않는 회원입니다." });
+//     }
+//     return req.login(user, (loginError) => {
+// if (loginError) {
+//   console.log("Error Here @@@@");
+//   return next(loginError);
+// }
 
-    return req.login(user, (loginError) => {
-      if (loginError) {
-        return next(loginError);
-      }
+//       return res.status(200).json(user);
+//     });
+//   })(req, res, next);
+// });
 
-      return res.redirect("/", 200);
-    });
-  })(req, res, next);
+router.get("/logout", isLoggedIn, (req, res, next) => {
+  req.session.destroy();
+  return req.logout();
 });
 
-router.get("/logout", isLoggedIn, (req, res) => {
-  req.logout();
-  req.session.destroy();
-  res.redirect("/", 200);
+router.post("/login", async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(401).json({
+        code: 401,
+        message: "등록되지 않은 회원입니다.",
+      });
+    }
+    const result = await bcrypt.compare(password, user.password);
+    const nick = user.nick;
+    if (result) {
+      const token = jwt.sign(
+        {
+          email: email,
+          password: password,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "365d", //1년...?
+          issuer: "SimpleSns",
+        }
+      );
+      return res.json({
+        code: 200,
+        message: "토큰이 발급 되었습니다.",
+        email: email,
+        nick,
+        token,
+      });
+    } else {
+      return res.json({
+        code: 405,
+        message: "비밀번호가 틀렸습니다.",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 });
 
 module.exports = router;

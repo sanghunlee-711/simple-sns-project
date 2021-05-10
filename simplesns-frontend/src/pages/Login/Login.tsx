@@ -8,7 +8,7 @@ export default function Login() {
   const history = useHistory();
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
-
+  const [userInfo, setUserInfo] = useState({ nick: "", id: "", provider: "" });
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === "id") {
@@ -28,14 +28,29 @@ export default function Login() {
       withCredentials: true,
     };
     const response = await axios.post(url, setting);
+    if (response.data.code !== 200) {
+      return alert(`${response.data.code} 에러가 발생했습니다.`);
+    }
     console.log(response);
+    const { token, nick, email } = response.data;
+    sessionStorage.setItem("token", token);
+    sessionStorage.setItem("nick", nick);
 
-    return;
+    return history.push("/");
   };
 
   return (
     <CompoentWrapper>
       <h1>Login</h1>
+      {/* {userInfo.nick.length > 1 ? (
+        <div>
+          <span>{userInfo.nick}</span>
+          <span>{userInfo.provider}</span>
+          <span>{userInfo.id}</span>
+        </div>
+      ) : (
+        ""
+      )} */}
       <InputWrapper>
         <input name="id" value={id} onChange={(e) => handleInputChange(e)} />
         <input
@@ -52,6 +67,9 @@ export default function Login() {
         <button name="join" onClick={() => history.push("/join")}>
           회원가입
         </button>
+        {/* <button name="join" onClick={() => doLogOut()}>
+          로그아웃
+        </button> */}
       </ButtonWrapper>
     </CompoentWrapper>
   );

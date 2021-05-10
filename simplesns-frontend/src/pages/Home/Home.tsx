@@ -1,5 +1,34 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { BASE_URL } from "../../config/config.json";
 
 export default function Home() {
-  return <div>This is Home Comp.</div>;
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    try {
+      const response = await axios.get(BASE_URL, {
+        headers: {
+          authorization: sessionStorage.getItem("token"),
+          key: process.env.CLIENT_SECRET,
+        }, //API 요청
+      });
+
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <div>
+      <div>This is Home Comp.</div>
+      {data.map((el) => (
+        <div>안녕</div>
+      ))}
+    </div>
+  );
 }

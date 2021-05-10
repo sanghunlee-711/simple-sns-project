@@ -4,15 +4,19 @@ const morgan = require("morgan");
 const path = require("path");
 const session = require("express-session");
 const dotenv = require("dotenv");
+const cors = require("cors");
 
 dotenv.config(); //for setting .env file
 const pageRouter = require("./routes/page"); //setting for pageRouter ;
 const authRouter = require("./routes/auth");
 
+const passportConfig = require("./passport");
 const { sequelize } = require("./models");
 const passport = require("passport");
 
 const app = express();
+passportConfig();
+
 app.set("port", process.env.PORT || 1500);
 sequelize
   .sync({ force: false })
@@ -20,6 +24,14 @@ sequelize
     console.log("Database Connect!");
   })
   .catch((err) => console.error(err));
+
+//cors 처리
+app.use(async (req, res, next) => {
+  cors({
+    origin: req.get("origin"),
+    credential: true,
+  })(req, res, next);
+});
 
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -33,7 +45,7 @@ app.use(
     secret: process.env.COOKIE_SECRET,
     cookie: {
       httpOnly: true,
-      secure: false,
+      secure: true,
     },
   })
 );
