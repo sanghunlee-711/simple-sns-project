@@ -32,11 +32,13 @@ export default function Login() {
       return alert(`${response.data.code} 에러가 발생했습니다.`);
     }
     console.log(response);
-    const { token, nick, email } = response.data;
+    const { token, nick } = response.data;
     sessionStorage.setItem("token", token);
     sessionStorage.setItem("nick", nick);
 
-    return history.push("/");
+    if (sessionStorage.getItem("nick")) {
+      return history.push("/");
+    }
   };
 
   return (
