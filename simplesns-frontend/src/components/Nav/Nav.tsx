@@ -42,7 +42,24 @@ export default function Nav() {
         <QuitButton onClick={() => setBurgerToggle(!buggerToggle)}>
           <i className="fas fa-times fa-2x"></i>
         </QuitButton>
-        <ProfileWrapper>
+        <ProfileContainer>
+          <ProfileWrapper>
+            <div>
+              <span>안녕하세요!</span>
+              &nbsp;
+              <span>{sessionStorage.getItem("nick")}님</span>
+            </div>
+            <div>
+              <div>
+                <span>팔로잉</span>
+                <span>100명</span>
+              </div>
+              <div>
+                <span>팔로워</span>
+                <span>120명</span>
+              </div>
+            </div>
+          </ProfileWrapper>
           <ButtonWrapper>
             <Button
               onClick={
@@ -65,7 +82,7 @@ export default function Nav() {
               Join
             </Button>
           </ButtonWrapper>
-        </ProfileWrapper>
+        </ProfileContainer>
       </BurgetNavContainer>
     </>
   );
@@ -94,6 +111,7 @@ const NavContainer = styled.header`
   justify-content: space-between;
   align-items: center;
   transition: all 0.5s ease-in-out;
+  font-family: "Newsreader", serif;
 
   &:hover {
     animation: animationForBorder 3s infinite;
@@ -165,7 +183,17 @@ const Logo = styled.div`
   cursor: pointer;
 `;
 
-const ProfileWrapper = styled.section``;
+const ProfileContainer = styled.section`
+  width: 100%;
+`;
+
+const ProfileWrapper = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+  width: calc(490px * 0.8);
+`;
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-evenly;

@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import Post from "../../components/Post/Post";
 import { BASE_URL } from "../../config/config.json";
 
 export default function Home() {
@@ -24,11 +26,16 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <HomeContainer>
       <div>This is Home Comp.</div>
       {data.map((el) => (
         <div>안녕</div>
       ))}
-    </div>
+      <Post />
+    </HomeContainer>
   );
 }
+
+const HomeContainer = styled.main`
+  margin-top: 80px;
+`;
