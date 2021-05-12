@@ -1,14 +1,18 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 import { BASE_URL } from "../../config/config.json";
+import { togglePost } from "../../redux/reducer/navReducer";
 
 export default function Nav() {
   const [nick, setNick] = useState("");
   const token = sessionStorage.getItem("token");
   const history = useHistory();
   const [buggerToggle, setBurgerToggle] = useState<boolean>(false);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     setNick(sessionStorage.getItem("nick") as string);
   }, []);
@@ -33,9 +37,14 @@ export default function Nav() {
       <NavContainer>
         <NavWrapper>
           <Logo onClick={() => history.push("/")}>Simple SNS</Logo>
-          <BurgerButtonWrapper onClick={() => setBurgerToggle(!buggerToggle)}>
-            <i className="fas fa-bars fa-2x"></i>
-          </BurgerButtonWrapper>
+          <NavButtonWrapper>
+            <PostButton onClick={() => dispatch(togglePost(true))}>
+              Post
+            </PostButton>
+            <BurgerButtonWrapper onClick={() => setBurgerToggle(!buggerToggle)}>
+              <i className="fas fa-bars fa-2x"></i>
+            </BurgerButtonWrapper>
+          </NavButtonWrapper>
         </NavWrapper>
       </NavContainer>
       <BurgetNavContainer show={buggerToggle}>
@@ -44,6 +53,7 @@ export default function Nav() {
         </QuitButton>
         <ProfileContainer>
           <ProfileWrapper>
+            <ProfileImage />
             <div>
               <span>안녕하세요!</span>
               &nbsp;
@@ -71,7 +81,7 @@ export default function Nav() {
                     }
               }
             >
-              Login
+              {token ? "LOGOUT" : "LOGIN"}
             </Button>
             <Button
               onClick={() => {
@@ -87,6 +97,22 @@ export default function Nav() {
     </>
   );
 }
+
+const NavButtonWrapper = styled.div`
+  display: flex;
+  width: fit-content;
+  button {
+    margin-right: 3vw;
+  }
+`;
+
+const ProfileImage = styled.div`
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+  margin: 20px 0;
+  background-color: black;
+`;
 
 const BurgerButtonWrapper = styled.div``;
 
@@ -135,7 +161,7 @@ const NavContainer = styled.header`
 
 const BurgetNavContainer = styled.nav<{ show: boolean }>`
   display: ${({ show }) => (show ? "flex" : "none")};
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
   position: absolute;
@@ -184,7 +210,8 @@ const Logo = styled.div`
 `;
 
 const ProfileContainer = styled.section`
-  width: 100%;
+  width: 80%;
+  margin-top: 4vw;
 `;
 
 const ProfileWrapper = styled.div`
@@ -199,4 +226,17 @@ const ButtonWrapper = styled.div`
   justify-content: space-evenly;
   align-items: center;
   width: calc(490px * 0.8);
+  margin: 3vw 0;
+`;
+
+const PostButton = styled.button`
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  width: 7vw;
+  height: 4vh;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+  border-radius: 0.4vw;
+  display: static;
 `;

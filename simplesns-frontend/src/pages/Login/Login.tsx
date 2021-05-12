@@ -37,6 +37,7 @@ export default function Login() {
     sessionStorage.setItem("nick", nick);
 
     if (sessionStorage.getItem("nick")) {
+      alert("로그인이 완료 되었습니다 :)");
       return history.push("/");
     }
   };
@@ -44,15 +45,6 @@ export default function Login() {
   return (
     <CompoentWrapper>
       <h1>Login</h1>
-      {/* {userInfo.nick.length > 1 ? (
-        <div>
-          <span>{userInfo.nick}</span>
-          <span>{userInfo.provider}</span>
-          <span>{userInfo.id}</span>
-        </div>
-      ) : (
-        ""
-      )} */}
       <InputWrapper>
         <input name="id" value={id} onChange={(e) => handleInputChange(e)} />
         <input
@@ -69,9 +61,6 @@ export default function Login() {
         <button name="join" onClick={() => history.push("/join")}>
           회원가입
         </button>
-        {/* <button name="join" onClick={() => doLogOut()}>
-          로그아웃
-        </button> */}
       </ButtonWrapper>
     </CompoentWrapper>
   );

@@ -1,20 +1,40 @@
-interface NavActionType {
-  type: string;
-  payload: string;
+interface NavState {
+  toggle: boolean;
+  state2: [];
+  state3: string;
 }
 
-export const initialState = {
-  state1: { nick: "" },
+//Action Type
+const DOTOGGLE_POST = "nav/DOTOGGLE_POST" as const;
+
+//Action Creator
+export const togglePost = (toggle: boolean) => ({
+  type: DOTOGGLE_POST,
+  payload: toggle,
+});
+
+// 유니온 타입으로 계속 추가하자
+type NavAction = ReturnType<typeof togglePost>;
+
+//InitialState
+export const INITIAL_STATE: NavState = {
+  toggle: false,
   state2: [],
   state3: "",
 };
 
-export const navReducer = (state = initialState, action: NavActionType) => {
+//Reducer
+export const navReducer = (
+  state: NavState = INITIAL_STATE,
+  action: NavAction
+) => {
   switch (action.type) {
-    case "ADD_NICK":
-      return { ...state, state1: { nick: action.payload } };
+    case "nav/DOTOGGLE_POST":
+      return { ...state, toggle: !state.toggle };
 
     default:
       return state;
   }
 };
+
+export default navReducer;
