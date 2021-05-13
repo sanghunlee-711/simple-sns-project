@@ -27,7 +27,7 @@ export default function Post(): JSX.Element {
       headers: {
         authorization: sessionStorage.getItem("token"),
         key: process.env.CLIENT_SECRET,
-        "content-type": "multipart/form-data",
+        "content-type": "multipart/form-data", //붙이지 않으면 multer가 인식 못한다.
       },
     };
     try {
@@ -37,7 +37,10 @@ export default function Post(): JSX.Element {
         config
       );
 
+      setImageData([...imgData, { value: "", src: response.data.url }]);
+
       console.log("200", response);
+      console.log(__dirname);
 
       // setImageData(response.data.url);
     } catch (error) {
@@ -67,6 +70,7 @@ export default function Post(): JSX.Element {
           method="post"
           encType="multipart/form-data"
         >
+          <img src="../../../uploads/cloud31620917631665.png" alt="test" />
           <TextAreaWrapper>
             <textarea
               id="twit"

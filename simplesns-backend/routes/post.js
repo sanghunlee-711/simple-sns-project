@@ -4,6 +4,8 @@ const multer = require("multer");
 const { isLoggedIn } = require("./middlewares");
 const { Post, Hashtag } = require("../models");
 const fs = require("fs");
+const AWS = require("aws-sdk");
+const multerS3 = require("multer-s3");
 const path = require("path");
 
 const router = express.Router();
@@ -15,24 +17,43 @@ try {
   fs.mkdirSync("uploads");
 }
 
-const upload = multer({
-  storage: multer.diskStorage({
-    destination(req, file, cb) {
-      cb(null, "uploads/");
-    },
-
-    filename(req, file, cb) {
-      const ext = path.extname(file.originalname);
-      cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
-    },
-  }),
-
-  limits: { fileSize: 5 * 1024 * 1024 },
+AWS.config.update({
+  accessKeyId: process.env.S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  region: "ap-northeast-2",
 });
 
+const upload = multer({
+  storage: multerS3({
+    s3: new AWS.S3(),
+    bucket: "cloudleesimplesns",
+    key(req, file, cb) {
+      cb(null, `original/${Date.now()}${path.basename(file.originalname)}`);
+    },
+  }),
+});
+
+// const upload = multer({
+//   storage: multer.diskStorage({
+//     destination(req, file, cb) {
+//       cb(null, "uploads/");
+//     },
+
+//     filename(req, file, cb) {
+//       const ext = path.extname(file.originalname);
+//       cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
+//     },
+//   }),
+
+//   limits: { fileSize: 5 * 1024 * 1024 },
+// });
+
 router.post("/img", upload.single("img"), (req, res) => {
-  console.log("@@@@@@@@@@@@@@@@@@@@>>>>", req);
-  res.json({ url: `/img/${req.file.filename}` });
+  console.log("@@@@@@@@@@@@@@@@@@@@>>>>", req.file);
+  // res.json({
+  //   url: `simplesns-backend/uploads/${req.file.filename}`,
+  // });
+  res.json({ url: req.file.location });
 });
 
 const upload2 = multer();

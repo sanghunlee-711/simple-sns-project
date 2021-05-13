@@ -5,7 +5,6 @@ import styled from "styled-components";
 import Post from "../../components/Post/Post";
 import { BASE_URL } from "../../config/config.json";
 import { RootState } from "../../redux/store";
-
 export default function Home() {
   const [data, setData] = useState([]);
   const dispatch = useDispatch();
