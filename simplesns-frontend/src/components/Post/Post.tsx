@@ -5,27 +5,58 @@ import styled from "styled-components";
 import { BASE_URL } from "../../config/config.json";
 import { togglePost } from "../../redux/reducer/navReducer";
 
+interface ImageProps {
+  value: string;
+  src: string;
+}
+
 export default function Post(): JSX.Element {
   const [files, setFiles] = useState<FileList[]>([]);
-  const [imgData, setImageData] = useState("");
+  const [imgData, setImageData] = useState<ImageProps[]>([]);
   const dispatch = useDispatch();
 
   const showImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newForm = new FormData();
+    e.preventDefault();
+    const formData = new FormData();
+
     const files = e.target.files as FileList;
     const _file = files[0] as File;
-    newForm.append("img", _file);
+    formData.append("img", _file);
 
+    const config = {
+      headers: {
+        authorization: sessionStorage.getItem("token"),
+        key: process.env.CLIENT_SECRET,
+        "content-type": "multipart/form-data",
+      },
+    };
     try {
-      const response = await axios.post(`${BASE_URL}/post/img`, newForm);
-      console.log(response);
+      const response = await axios.post(
+        `${BASE_URL}/post/img`,
+        formData,
+        config
+      );
 
-      setImageData(response.data.url);
+      console.log("200", response);
+
+      // setImageData(response.data.url);
     } catch (error) {
       console.error(error);
       alert(`${error}발생`);
     }
   };
+
+  // const uploadPost = async () => {
+  //   try {
+  //     const response = await axios.post(`${BASE_URL}/post`, filename);
+  //     console.log(response);
+
+  //     setImageData(response.data.url);
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert(`${error}발생`);
+  //   }
+  // };
 
   return (
     <PostContainer>
@@ -46,14 +77,20 @@ export default function Post(): JSX.Element {
           </TextAreaWrapper>
           <div>
             {/* show here uploaded Image in DB */}
-            <PreviewImg
-              id="img-preview"
-              src={imgData}
-              width="250"
-              alt="미리보기"
-              show={imgData ? true : false}
-            />
-            <input id="img-url" type="hidden" name="url" value={imgData} />
+            {imgData.map(({ value, src }) => {
+              return (
+                <>
+                  <PreviewImg
+                    id="img-preview"
+                    src={src}
+                    width="250"
+                    alt="미리보기"
+                    show={imgData ? true : false}
+                  />
+                  <input id="img-url" type="hidden" name="url" value={value} />
+                </>
+              );
+            })}
           </div>
           <UplodWrapper>
             <label id="img-label" htmlFor="img">
