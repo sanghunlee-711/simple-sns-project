@@ -1,12 +1,14 @@
 const express = require("express");
 const session = require("express-session");
 const multer = require("multer");
-const { isLoggedIn } = require("./middlewares");
+const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const { Post, Hashtag } = require("../models");
 const fs = require("fs");
 const AWS = require("aws-sdk");
 const multerS3 = require("multer-s3");
 const path = require("path");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
@@ -33,33 +35,28 @@ const upload = multer({
   }),
 });
 
-// const upload = multer({
-//   storage: multer.diskStorage({
-//     destination(req, file, cb) {
-//       cb(null, "uploads/");
-//     },
-
-//     filename(req, file, cb) {
-//       const ext = path.extname(file.originalname);
-//       cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
-//     },
-//   }),
-
-//   limits: { fileSize: 5 * 1024 * 1024 },
-// });
-
 router.post("/img", upload.single("img"), (req, res) => {
   console.log("@@@@@@@@@@@@@@@@@@@@>>>>", req.file);
   res.json({ url: req.file.location });
 });
 
 const upload2 = multer();
-router.post("/", isLoggedIn, upload2.none(), async (req, res, next) => {
+router.post("/", upload2.none(), async (req, res, next) => {
+  console.log(req.body);
+
+  // const user = User.findOne({ where: { nick: req.body.user.nick } });
+
   try {
+    const verifying = jwt.verify(
+      req.headers.authorization,
+      process.env.JWT_SECRET
+    );
+
     const post = await Post.create({
+      id: verifying.email,
       content: req.body.content,
       img: req.body.url,
-      UserId: req.user.id,
+      UserId: verifying.nick,
     });
 
     //해시태그를 정규표현식으로 추출해내기
@@ -68,15 +65,22 @@ router.post("/", isLoggedIn, upload2.none(), async (req, res, next) => {
     if (hashtags) {
       const result = await Promise.all(
         hashtags.map((tag) => {
+          //Db에 존재하면 가져오고 존재하지 않으면 생성 후 가져오는 메서드(findOrCreate)
           return Hashtag.findOrCreate({
             where: { title: tag.slice(1).toLowerCase() },
           });
         })
       );
+
       await post.addHashtags(result.map((r) => r[0]));
     }
-
-    res.redirect("/");
+    if (post) {
+      res.status(200).json({
+        code: 200,
+        message: "게시글 업로드 완료",
+      });
+      return res.redirect("/");
+    }
   } catch (error) {
     console.error(error);
     next(error);

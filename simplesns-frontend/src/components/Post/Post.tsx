@@ -1,9 +1,23 @@
 import axios from "axios";
+import "codemirror/lib/codemirror.css";
+import "highlight.js/styles/github.css";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { BASE_URL } from "../../config/config.json";
+import "tui-editor/dist/tui-editor-contents.css";
+import "tui-editor/dist/tui-editor.css";
+import { BASE_URL, CLIENT_SECRET } from "../../config/config.json";
 import { togglePost } from "../../redux/reducer/navReducer";
+//https://luvstudy.tistory.com/108
+
+// const instance = new Editor({
+//   el: document.querySelector("#editorSection") as HTMLElement,
+//   initialEditType: "markdown",
+//   previewStyle: "vertical",
+//   height: "300px",
+// });
+
+// instance.getHtml();
 
 interface ImageProps {
   value: string;
@@ -26,8 +40,7 @@ export default function Post(): JSX.Element {
     const config = {
       headers: {
         authorization: sessionStorage.getItem("token"),
-        key: process.env.CLIENT_SECRET,
-        "content-type": "multipart/form-data", //붙이지 않으면 multer가 인식 못한다.
+        key: CLIENT_SECRET,
       },
     };
     try {
@@ -38,35 +51,50 @@ export default function Post(): JSX.Element {
       );
 
       setImageData([...imgData, { value: "", src: response.data.url }]);
-
-      console.log("200", response);
-      console.log(__dirname);
-
-      // setImageData(response.data.url);
+      let newImg = document.createElement("img");
+      newImg.setAttribute("src", response.data.url);
+      const twit = document.getElementById("twit") as HTMLElement;
+      twit.appendChild(newImg);
     } catch (error) {
       console.error(error);
       alert(`${error}발생`);
     }
   };
 
-  // const uploadPost = async () => {
-  //   try {
-  //     const response = await axios.post(`${BASE_URL}/post`, filename);
-  //     console.log(response);
+  const uploadPost = async () => {
+    const body = {
+      content: "test contents",
+      url: "testURL",
+      user: {
+        nick: sessionStorage.getItem("nick"),
+      },
+    };
 
-  //     setImageData(response.data.url);
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert(`${error}발생`);
-  //   }
-  // };
+    const config = {
+      headers: {
+        authorization: sessionStorage.getItem("token"),
+        key: process.env.CLIENT_SECRET,
+        "content-type": "multipart/form-data", //붙이지 않으면 multer가 인식 못한다.
+      },
+    };
+
+    try {
+      const response = await axios.post(`${BASE_URL}/post`, body, config);
+      console.log(response);
+
+      setImageData(response.data.url);
+    } catch (error) {
+      console.error(error);
+      alert(`${error}발생`);
+    }
+  };
 
   return (
     <PostContainer>
       <PostWrapper>
         <form
           id="twit-form"
-          action="/post"
+          action={`${BASE_URL}/post`}
           method="post"
           encType="multipart/form-data"
         >
@@ -78,6 +106,7 @@ export default function Post(): JSX.Element {
               maxLength={140}
               autoFocus={true}
             ></textarea>
+            <template></template>
           </TextAreaWrapper>
           <div>
             {/* show here uploaded Image in DB */}
@@ -106,7 +135,7 @@ export default function Post(): JSX.Element {
               accept="image/*"
               onChange={(e) => showImage(e)}
             />
-            <button id="twit-btn" type="submit">
+            <button id="twit-btn" onClick={() => uploadPost()}>
               Upload
             </button>
           </UplodWrapper>
