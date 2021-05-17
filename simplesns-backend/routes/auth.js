@@ -40,7 +40,11 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
 
 router.get("/logout", isLoggedIn, (req, res, next) => {
   req.session.destroy();
-  return req.logout();
+  req.logout();
+  return res.status(200).json({
+    code: 200,
+    message: "로그아웃 완료",
+  });
 });
 
 router.post("/login", async (req, res, next) => {

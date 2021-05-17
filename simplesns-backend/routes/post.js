@@ -50,9 +50,6 @@ const upload = multer({
 
 router.post("/img", upload.single("img"), (req, res) => {
   console.log("@@@@@@@@@@@@@@@@@@@@>>>>", req.file);
-  // res.json({
-  //   url: `simplesns-backend/uploads/${req.file.filename}`,
-  // });
   res.json({ url: req.file.location });
 });
 
