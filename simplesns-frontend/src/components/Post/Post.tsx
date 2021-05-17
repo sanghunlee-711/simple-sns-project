@@ -1,13 +1,13 @@
+import "@toast-ui/editor/dist/toastui-editor.css"; // Editor's Style
 import axios from "axios";
 import "codemirror/lib/codemirror.css";
-import "highlight.js/styles/github.css";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import "tui-editor/dist/tui-editor-contents.css";
-import "tui-editor/dist/tui-editor.css";
 import { BASE_URL, CLIENT_SECRET } from "../../config/config.json";
 import { togglePost } from "../../redux/reducer/navReducer";
+import TuiEditor from "./components/TuiEditor";
+
 //https://luvstudy.tistory.com/108
 
 // const instance = new Editor({
@@ -100,13 +100,13 @@ export default function Post(): JSX.Element {
         >
           <img src="../../../uploads/cloud31620917631665.png" alt="test" />
           <TextAreaWrapper>
-            <textarea
+            {/* <textarea
               id="twit"
               name="content"
               maxLength={140}
               autoFocus={true}
-            ></textarea>
-            <template></template>
+            ></textarea> */}
+            <TuiEditor />
           </TextAreaWrapper>
           <div>
             {/* show here uploaded Image in DB */}
@@ -171,6 +171,7 @@ const AdWrapper = styled.div`
 `;
 
 const TextAreaWrapper = styled.div`
+  display: none;
   textarea {
     width: 40vw;
     height: 30vh;
