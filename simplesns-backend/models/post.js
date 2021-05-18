@@ -7,7 +7,8 @@ module.exports = class Post extends (
     return super.init(
       {
         content: {
-          type: Sequelize.STRING(200),
+          //tui editor tag 저장 위한 타입 변경
+          type: Sequelize.TEXT,
           allowNull: true,
         },
         //tui editor완성되면 img url도 content안에 다 넣어야 한다.

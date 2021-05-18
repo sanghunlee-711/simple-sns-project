@@ -9,6 +9,7 @@ const multerS3 = require("multer-s3");
 const path = require("path");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { verify } = require("crypto");
 
 const router = express.Router();
 
@@ -52,11 +53,12 @@ router.post("/", upload2.none(), async (req, res, next) => {
       process.env.JWT_SECRET
     );
 
+    const user = User.findOne({ where: { email: verifying.email } });
+
     const post = await Post.create({
-      id: verifying.email,
+      //id는 fmk를 넣어야 함.
+      id: user.id,
       content: req.body.content,
-      img: req.body.url,
-      UserId: verifying.nick,
     });
 
     //해시태그를 정규표현식으로 추출해내기
