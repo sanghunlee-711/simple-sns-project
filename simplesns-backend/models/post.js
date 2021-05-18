@@ -11,11 +11,6 @@ module.exports = class Post extends (
           type: Sequelize.TEXT,
           allowNull: true,
         },
-        //tui editor완성되면 img url도 content안에 다 넣어야 한다.
-        img: {
-          type: Sequelize.STRING(200),
-          allowNull: true,
-        },
       },
       {
         sequelize,

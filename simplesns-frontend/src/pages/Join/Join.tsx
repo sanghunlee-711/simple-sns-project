@@ -54,7 +54,7 @@ export default function Join() {
   };
 
   return (
-    <div>
+    <JoinWrapper>
       <h1>회원가입 페이지 :)</h1>
 
       <InputWrapper>
@@ -82,7 +82,7 @@ export default function Join() {
         </InputBlock>
         <button onClick={() => doJoin()}>Join</button>
       </InputWrapper>
-    </div>
+    </JoinWrapper>
   );
 }
 
@@ -95,4 +95,8 @@ const InputWrapper = styled.div`
 
 const InputBlock = styled.div`
   display: flex;
+`;
+
+const JoinWrapper = styled.div`
+  margin-top: 40vh;
 `;

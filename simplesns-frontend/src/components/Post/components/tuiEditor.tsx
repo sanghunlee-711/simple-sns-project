@@ -18,38 +18,6 @@ export default function TuiEditor() {
   const [imgData, setImageData] = useState<ImageProps[]>([]);
   const dispatch = useDispatch();
 
-  const showImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const formData = new FormData();
-
-    const files = e.target.files as FileList;
-    const _file = files[0] as File;
-    formData.append("img", _file);
-
-    const config = {
-      headers: {
-        authorization: sessionStorage.getItem("token"),
-        key: CLIENT_SECRET,
-      },
-    };
-    try {
-      const response = await axios.post(
-        `${BASE_URL}/post/img`,
-        formData,
-        config
-      );
-
-      setImageData([...imgData, { value: "", src: response.data.url }]);
-      let newImg = document.createElement("img");
-      newImg.setAttribute("src", response.data.url);
-      const twit = document.getElementById("twit") as HTMLElement;
-      twit.appendChild(newImg);
-    } catch (error) {
-      console.error(error);
-      alert(`${error}발생`);
-    }
-  };
-
   const saveImageToS3 = async (blob: File | Blob) => {
     console.log("SAVEIMGAE TO S3");
     let url = "TestURL";
@@ -69,14 +37,40 @@ export default function TuiEditor() {
         formData,
         config
       );
-      console.log(response.data);
       url = await response.data.url;
-      console.log(response.data.url);
     } catch (error) {
       alert("Error : ");
       console.error(error);
     }
     return url;
+  };
+
+  const savePost = async () => {
+    const _htmlContent = toastEditor.getHtml();
+    console.log(_htmlContent);
+    // /post로 post content전부 post 보내기
+    const config = {
+      headers: {
+        authorization: sessionStorage.getItem("token"),
+        key: CLIENT_SECRET,
+      },
+    };
+
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/post`,
+        {
+          content: _htmlContent,
+        },
+        config
+      );
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+      alert("Error:!");
+    }
+
+    setContent(content);
   };
 
   useEffect(() => {
@@ -99,16 +93,10 @@ export default function TuiEditor() {
     });
   }, []);
 
-  const saveArticle = () => {
-    const content = toastEditor.getHtml();
-
-    setContent(content);
-  };
-
   return (
     <div id="toastEditor">
       <div id="editSection"></div>
-      <button onClick={() => saveArticle()} className="btn_save">
+      <button onClick={() => savePost()} className="btn_save">
         Save
       </button>
     </div>

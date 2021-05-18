@@ -10,6 +10,7 @@ const path = require("path");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { verify } = require("crypto");
+const User = require("../models/user");
 
 const router = express.Router();
 
@@ -45,19 +46,22 @@ const upload2 = multer();
 router.post("/", upload2.none(), async (req, res, next) => {
   console.log(req.body);
 
-  // const user = User.findOne({ where: { nick: req.body.user.nick } });
-
   try {
     const verifying = jwt.verify(
       req.headers.authorization,
       process.env.JWT_SECRET
     );
 
-    const user = User.findOne({ where: { email: verifying.email } });
-
+    const user = await User.findOne({
+      attributes: ["id"],
+      where: { email: verifying.email },
+    });
+    const _id = await user.getDataValue("id");
+    console.log("!!!!!!!!_>>>>>>>>", user.getDataValue("id"));
+    console.log("!!!!!!!!!!@@@@@@___>>>", req.body.content);
     const post = await Post.create({
       //id는 fmk를 넣어야 함.
-      id: user.id,
+      userId: _id,
       content: req.body.content,
     });
 
@@ -82,6 +86,11 @@ router.post("/", upload2.none(), async (req, res, next) => {
         message: "게시글 업로드 완료",
       });
       return res.redirect("/");
+    } else {
+      return res.status(400).json({
+        code: 400,
+        message: "에러발생",
+      });
     }
   } catch (error) {
     console.error(error);
