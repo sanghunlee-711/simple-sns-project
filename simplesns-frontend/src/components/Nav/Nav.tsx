@@ -19,17 +19,27 @@ export default function Nav() {
 
   const doLogOut = async (): Promise<void> => {
     if (sessionStorage.getItem("token")) {
-      sessionStorage.removeItem("token");
-      sessionStorage.removeItem("nick");
-
       const url = `${BASE_URL}/auth/logout`;
-      const response = await axios.get(url);
-      console.log(response);
+      const response = await axios.get(url, {
+        headers: {
+          authorization: sessionStorage.getItem("token"),
+          key: process.env.CLIENT_SECRET,
+        }, //API 요청
+      });
+
+      console.log(response.status);
+      if (response.status === 200) {
+        sessionStorage.removeItem("nick");
+        sessionStorage.removeItem("token");
+        alert("로그아웃 완료");
+        window.location.reload();
+        return history.push("/");
+      } else {
+        alert("로그인 상태가 아닙니다.");
+      }
     } else {
       alert("로그인 상태가 아닙니다.");
     }
-    window.location.reload();
-    return history.push("/");
   };
 
   return (

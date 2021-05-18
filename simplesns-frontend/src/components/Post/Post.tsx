@@ -1,23 +1,85 @@
+import "@toast-ui/editor/dist/toastui-editor.css"; // Editor's Style
 import axios from "axios";
+import "codemirror/lib/codemirror.css";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { BASE_URL } from "../../config/config.json";
+import { BASE_URL, CLIENT_SECRET } from "../../config/config.json";
 import { togglePost } from "../../redux/reducer/navReducer";
+import TuiEditor from "./components/TuiEditor";
+
+//https://luvstudy.tistory.com/108
+
+// const instance = new Editor({
+//   el: document.querySelector("#editorSection") as HTMLElement,
+//   initialEditType: "markdown",
+//   previewStyle: "vertical",
+//   height: "300px",
+// });
+
+// instance.getHtml();
+
+interface ImageProps {
+  value: string;
+  src: string;
+}
 
 export default function Post(): JSX.Element {
   const [files, setFiles] = useState<FileList[]>([]);
-  const [imgData, setImageData] = useState("");
+  const [imgData, setImageData] = useState<ImageProps[]>([]);
   const dispatch = useDispatch();
 
   const showImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newForm = new FormData();
+    e.preventDefault();
+    const formData = new FormData();
+
     const files = e.target.files as FileList;
     const _file = files[0] as File;
-    newForm.append("img", _file);
+    formData.append("img", _file);
+
+    const config = {
+      headers: {
+        authorization: sessionStorage.getItem("token"),
+        key: CLIENT_SECRET,
+      },
+    };
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/post/img`,
+        formData,
+        config
+      );
+
+      setImageData([...imgData, { value: "", src: response.data.url }]);
+      let newImg = document.createElement("img");
+      newImg.setAttribute("src", response.data.url);
+      const twit = document.getElementById("twit") as HTMLElement;
+      twit.appendChild(newImg);
+    } catch (error) {
+      console.error(error);
+      alert(`${error}발생`);
+    }
+  };
+
+  const uploadPost = async () => {
+    const body = {
+      content: "test contents",
+      url: "testURL",
+      user: {
+        nick: sessionStorage.getItem("nick"),
+      },
+    };
+
+    const config = {
+      headers: {
+        authorization: sessionStorage.getItem("token"),
+        key: process.env.CLIENT_SECRET,
+        "content-type": "multipart/form-data", //붙이지 않으면 multer가 인식 못한다.
+      },
+    };
 
     try {
-      const response = await axios.post(`${BASE_URL}/post/img`, newForm);
+      const response = await axios.post(`${BASE_URL}/post`, body, config);
       console.log(response);
 
       setImageData(response.data.url);
@@ -32,28 +94,36 @@ export default function Post(): JSX.Element {
       <PostWrapper>
         <form
           id="twit-form"
-          action="/post"
+          action={`${BASE_URL}/post`}
           method="post"
           encType="multipart/form-data"
         >
+          <img src="../../../uploads/cloud31620917631665.png" alt="test" />
           <TextAreaWrapper>
-            <textarea
+            {/* <textarea
               id="twit"
               name="content"
               maxLength={140}
               autoFocus={true}
-            ></textarea>
+            ></textarea> */}
+            <TuiEditor />
           </TextAreaWrapper>
           <div>
             {/* show here uploaded Image in DB */}
-            <PreviewImg
-              id="img-preview"
-              src={imgData}
-              width="250"
-              alt="미리보기"
-              show={imgData ? true : false}
-            />
-            <input id="img-url" type="hidden" name="url" value={imgData} />
+            {imgData.map(({ value, src }) => {
+              return (
+                <>
+                  <PreviewImg
+                    id="img-preview"
+                    src={src}
+                    width="250"
+                    alt="미리보기"
+                    show={imgData ? true : false}
+                  />
+                  <input id="img-url" type="hidden" name="url" value={value} />
+                </>
+              );
+            })}
           </div>
           <UplodWrapper>
             <label id="img-label" htmlFor="img">
@@ -65,7 +135,7 @@ export default function Post(): JSX.Element {
               accept="image/*"
               onChange={(e) => showImage(e)}
             />
-            <button id="twit-btn" type="submit">
+            <button id="twit-btn" onClick={() => uploadPost()}>
               Upload
             </button>
           </UplodWrapper>
@@ -101,6 +171,7 @@ const AdWrapper = styled.div`
 `;
 
 const TextAreaWrapper = styled.div`
+  display: none;
   textarea {
     width: 40vw;
     height: 30vh;

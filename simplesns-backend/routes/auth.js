@@ -38,31 +38,13 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
   }
 });
 
-// router.post("/login", isNotLoggedIn, (req, res, next) => {
-//   passport.authenticate("local", { session: true }, (authError, user, info) => {
-// if (authError) {
-//   //authErr값이 존재한다면 실패한 것이다
-//   console.error(authError);
-//   return next(authError);
-// }
-
-//     if (!user) {
-//       return res.status(404).json({ message: "존재하지 않는 회원입니다." });
-//     }
-//     return req.login(user, (loginError) => {
-// if (loginError) {
-//   console.log("Error Here @@@@");
-//   return next(loginError);
-// }
-
-//       return res.status(200).json(user);
-//     });
-//   })(req, res, next);
-// });
-
 router.get("/logout", isLoggedIn, (req, res, next) => {
   req.session.destroy();
-  return req.logout();
+  req.logout();
+  return res.status(200).json({
+    code: 200,
+    message: "로그아웃 완료",
+  });
 });
 
 router.post("/login", async (req, res, next) => {

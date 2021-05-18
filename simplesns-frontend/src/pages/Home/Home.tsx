@@ -2,10 +2,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import Post from "../../components/Post/Post";
+import TuiPost from "../../components/Post/TuiPost";
 import { BASE_URL } from "../../config/config.json";
 import { RootState } from "../../redux/store";
-
 export default function Home() {
   const [data, setData] = useState([]);
   const dispatch = useDispatch();
@@ -32,7 +31,7 @@ export default function Home() {
   return (
     <HomeContainer>
       <PostContainer togglePost={postToggle}>
-        <Post />
+        <TuiPost />
       </PostContainer>
 
       {data.map((el) => (
@@ -43,7 +42,7 @@ export default function Home() {
 }
 
 const HomeContainer = styled.main`
-  margin-top: 80px;
+  margin-top: 70px;
 `;
 
 const PostContainer = styled.div<{ togglePost: boolean }>`
@@ -51,6 +50,7 @@ const PostContainer = styled.div<{ togglePost: boolean }>`
   width: 80%;
   margin: 0 auto;
   border: 1px solid black;
+  height: 100%;
 `;
 
 const PostButton = styled.button<{ togglePost: boolean }>`
