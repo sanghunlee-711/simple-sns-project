@@ -3,21 +3,13 @@ import "@toast-ui/editor/dist/toastui-editor.css"; // Editor's Style
 import axios from "axios";
 import "codemirror/lib/codemirror.css";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useHistory } from "react-router";
 import { BASE_URL, CLIENT_SECRET } from "../../../config/config.json";
 
-interface ImageProps {
-  value: string;
-  src: string;
-}
-
 let toastEditor: Editor;
-export default function TuiEditor() {
+export default function TuiEditor(): JSX.Element {
   const [content, setContent] = useState("");
-  const [files, setFiles] = useState<FileList[]>([]);
-  const [imgData, setImageData] = useState<ImageProps[]>([]);
-  const dispatch = useDispatch();
-
+  const history = useHistory();
   const saveImageToS3 = async (blob: File | Blob) => {
     console.log("SAVEIMGAE TO S3");
     let url = "TestURL";
@@ -64,6 +56,12 @@ export default function TuiEditor() {
         },
         config
       );
+
+      if (response.status !== 200) {
+        return alert(`${response.status} Error 발생`);
+      }
+      history.push("/");
+
       console.log(response);
     } catch (error) {
       console.error(error);
@@ -82,11 +80,8 @@ export default function TuiEditor() {
       hooks: {
         addImageBlobHook: async function (blob, callback) {
           //blob을 s3로 넘겨서 저장하고 그 경로를 다시 받아서 콜백에 넣어주는 방식으로 구성하면 될듯
-          console.log(blob);
           const imgUrl = saveImageToS3(blob);
           callback(await imgUrl, "newOne");
-          console.log(callback);
-          console.log("It's In Hooks!");
           return false;
         },
       },

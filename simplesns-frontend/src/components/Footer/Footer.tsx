@@ -22,11 +22,8 @@ export default function Footer() {
 
 const FooterContainer = styled.footer`
   border-top: 1px solid black;
-
-  position: absolute;
   width: 100%;
   margin: 0 auto;
-  bottom: 0;
   font-family: "Newsreader", serif;
 `;
 

@@ -2,11 +2,20 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import TuiViewer from "../../components/Post/components/TuiViewer";
 import TuiPost from "../../components/Post/TuiPost";
 import { BASE_URL } from "../../config/config.json";
 import { RootState } from "../../redux/store";
+
+interface contentsData {
+  id: number;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export default function Home() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<contentsData[]>([]);
   const dispatch = useDispatch();
   const postToggle = useSelector((state: RootState) => state.navReducer.toggle);
 
@@ -21,7 +30,7 @@ export default function Home() {
           key: process.env.CLIENT_SECRET,
         }, //API 요청
       });
-
+      setData(response.data);
       console.log(response);
     } catch (error) {
       console.error(error);
@@ -34,8 +43,8 @@ export default function Home() {
         <TuiPost />
       </PostContainer>
 
-      {data.map((el) => (
-        <div>안녕</div>
+      {data.map(({ content, id }) => (
+        <TuiViewer content={content} />
       ))}
     </HomeContainer>
   );
