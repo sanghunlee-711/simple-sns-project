@@ -11,7 +11,6 @@ export default function TuiEditor(): JSX.Element {
   const [content, setContent] = useState("");
   const history = useHistory();
   const saveImageToS3 = async (blob: File | Blob) => {
-    console.log("SAVEIMGAE TO S3");
     let url = "TestURL";
     const config = {
       headers: {
@@ -39,7 +38,6 @@ export default function TuiEditor(): JSX.Element {
 
   const savePost = async () => {
     const _htmlContent = toastEditor.getHtml();
-    console.log(_htmlContent);
     // /post로 post content전부 post 보내기
     const config = {
       headers: {
@@ -61,8 +59,6 @@ export default function TuiEditor(): JSX.Element {
         return alert(`${response.status} Error 발생`);
       }
       history.push("/");
-
-      console.log(response);
     } catch (error) {
       console.error(error);
       alert("Error:!");

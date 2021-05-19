@@ -31,7 +31,6 @@ export default function Login() {
     if (response.data.code !== 200) {
       return alert(`${response.data.code} 에러가 발생했습니다.`);
     }
-    console.log(response);
     const { token, nick } = response.data;
     sessionStorage.setItem("token", token);
     sessionStorage.setItem("nick", nick);

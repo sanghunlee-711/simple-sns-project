@@ -31,7 +31,6 @@ export default function Home() {
         }, //API 요청
       });
       setData(response.data);
-      console.log(response);
     } catch (error) {
       console.error(error);
     }
@@ -42,10 +41,11 @@ export default function Home() {
       <PostContainer togglePost={postToggle}>
         <TuiPost />
       </PostContainer>
-
-      {data.map(({ content, id }) => (
-        <TuiViewer content={content} />
-      ))}
+      <AritcleWrapper>
+        {data.map(({ content, id }) => (
+          <TuiViewer content={content} />
+        ))}
+      </AritcleWrapper>
     </HomeContainer>
   );
 }
@@ -72,4 +72,10 @@ const PostButton = styled.button<{ togglePost: boolean }>`
   transition: all 0.5s ease-in-out;
   border-radius: 0.4vw;
   display: ${({ togglePost }) => (togglePost ? "none" : "static")};
+`;
+
+const AritcleWrapper = styled.section`
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
 `;

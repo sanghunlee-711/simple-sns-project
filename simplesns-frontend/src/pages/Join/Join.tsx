@@ -28,7 +28,6 @@ export default function Join() {
   const doJoin = async () => {
     const url = `${config.BASE_URL}/auth/join`;
 
-    console.log(url);
     const setting = {
       email: id,
       nick,
@@ -39,7 +38,6 @@ export default function Join() {
     try {
       const response = await axios.post(url, setting);
 
-      console.log(response);
       alert(`${response}`);
 
       if (response.status === 200) {

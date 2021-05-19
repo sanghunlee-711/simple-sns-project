@@ -27,7 +27,6 @@ export default function Nav() {
         }, //API 요청
       });
 
-      console.log(response.status);
       if (response.status === 200) {
         sessionStorage.removeItem("nick");
         sessionStorage.removeItem("token");
