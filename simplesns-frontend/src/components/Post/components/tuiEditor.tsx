@@ -22,7 +22,7 @@ export default function TuiEditor(): JSX.Element {
   };
 
   const saveImageToS3 = async (blob: File | Blob) => {
-    let url = "TestURL";
+    let url = "";
     const config = {
       headers: {
         authorization: sessionStorage.getItem("token"),
@@ -55,7 +55,6 @@ export default function TuiEditor(): JSX.Element {
       return alert("하나이상의 사진은 꼭 업로드 해주셔야 합니다.");
     }
 
-    // /post로 post content전부 post 보내기
     const config = {
       headers: {
         authorization: sessionStorage.getItem("token"),
@@ -78,7 +77,8 @@ export default function TuiEditor(): JSX.Element {
         return alert(`${response.status} Error 발생`);
       } else {
         alert("업로드가 완료 되었습니다.");
-        return history.push("/");
+        history.push("/");
+        return window.location.reload();
       }
     } catch (error) {
       console.error(error);

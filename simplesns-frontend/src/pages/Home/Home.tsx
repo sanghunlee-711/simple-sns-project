@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import TuiViewer from "../../components/Post/components/TuiViewer";
-import TuiPost from "../../components/Post/TuiPost";
 import { BASE_URL } from "../../config/config.json";
 import { RootState } from "../../redux/store";
 
@@ -42,9 +41,9 @@ export default function Home() {
 
   return (
     <HomeContainer>
-      <PostContainer togglePost={postToggle}>
+      {/* <PostContainer togglePost={postToggle}>
         <TuiPost />
-      </PostContainer>
+      </PostContainer> */}
       <AritcleWrapper>
         {data.map(({ content, id, title, titleImgUrl }) => (
           <TuiViewer

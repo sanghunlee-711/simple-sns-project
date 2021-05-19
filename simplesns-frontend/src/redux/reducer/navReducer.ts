@@ -30,7 +30,8 @@ export const navReducer = (
 ) => {
   switch (action.type) {
     case "nav/DOTOGGLE_POST":
-      return { ...state, toggle: !state.toggle };
+      console.log("Work?", action.payload);
+      return { ...state, toggle: action.payload };
 
     default:
       return state;

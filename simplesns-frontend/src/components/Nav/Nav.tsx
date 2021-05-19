@@ -1,16 +1,20 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import styled from "styled-components";
+import PostPortal from "../../components/Post/components/PostPortal";
 import { BASE_URL } from "../../config/config.json";
 import { togglePost } from "../../redux/reducer/navReducer";
+import { RootState } from "../../redux/store";
+import TuiPost from "../Post/TuiPost";
 
 export default function Nav() {
   const [nick, setNick] = useState("");
   const token = sessionStorage.getItem("token");
-  const history = useHistory();
   const [buggerToggle, setBurgerToggle] = useState<boolean>(false);
+  const history = useHistory();
+  const postToggle = useSelector((state: RootState) => state.navReducer.toggle);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -24,7 +28,7 @@ export default function Nav() {
         headers: {
           authorization: sessionStorage.getItem("token"),
           key: process.env.CLIENT_SECRET,
-        }, //API 요청
+        },
       });
 
       if (response.status === 200) {
@@ -47,7 +51,11 @@ export default function Nav() {
         <NavWrapper>
           <Logo onClick={() => history.push("/")}>Simple SNS</Logo>
           <NavButtonWrapper>
-            <PostButton onClick={() => dispatch(togglePost(true))}>
+            <PostButton
+              onClick={() => {
+                dispatch(togglePost(!postToggle));
+              }}
+            >
               Post
             </PostButton>
             <BurgerButtonWrapper onClick={() => setBurgerToggle(!buggerToggle)}>
@@ -103,6 +111,11 @@ export default function Nav() {
           </ButtonWrapper>
         </ProfileContainer>
       </BurgetNavContainer>
+      {postToggle && (
+        <PostPortal>
+          <TuiPost />
+        </PostPortal>
+      )}
     </>
   );
 }
