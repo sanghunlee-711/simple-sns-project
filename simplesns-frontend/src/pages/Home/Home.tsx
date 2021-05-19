@@ -43,7 +43,7 @@ export default function Home() {
       </PostContainer>
       <AritcleWrapper>
         {data.map(({ content, id }) => (
-          <TuiViewer content={content} />
+          <TuiViewer content={content} key={`${id}post Viewer`} />
         ))}
       </AritcleWrapper>
     </HomeContainer>

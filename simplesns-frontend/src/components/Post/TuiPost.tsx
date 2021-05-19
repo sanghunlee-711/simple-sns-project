@@ -16,15 +16,12 @@ export default function TuiPost() {
 
   return (
     <PostContainer>
-      <div>
-        <TuiEditor />
-      </div>
+      <TuiEditor />
     </PostContainer>
   );
 }
 
 const PostContainer = styled.div`
   width: 100%;
-  display: flex;
   position: relative;
 `;
