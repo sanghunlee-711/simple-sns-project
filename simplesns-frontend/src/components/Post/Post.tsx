@@ -3,21 +3,11 @@ import axios from "axios";
 import "codemirror/lib/codemirror.css";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router";
 import styled from "styled-components";
 import { BASE_URL, CLIENT_SECRET } from "../../config/config.json";
 import { togglePost } from "../../redux/reducer/navReducer";
 import TuiEditor from "./components/TuiEditor";
-
-//https://luvstudy.tistory.com/108
-
-// const instance = new Editor({
-//   el: document.querySelector("#editorSection") as HTMLElement,
-//   initialEditType: "markdown",
-//   previewStyle: "vertical",
-//   height: "300px",
-// });
-
-// instance.getHtml();
 
 interface ImageProps {
   value: string;
@@ -25,10 +15,9 @@ interface ImageProps {
 }
 
 export default function Post(): JSX.Element {
-  const [files, setFiles] = useState<FileList[]>([]);
   const [imgData, setImageData] = useState<ImageProps[]>([]);
   const dispatch = useDispatch();
-
+  const history = useHistory();
   const showImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const formData = new FormData();
@@ -81,8 +70,10 @@ export default function Post(): JSX.Element {
     try {
       const response = await axios.post(`${BASE_URL}/post`, body, config);
       console.log(response);
-
-      setImageData(response.data.url);
+      if (response.status !== 200) {
+        return alert(`${response.status} Error 발생`);
+      }
+      history.push("/");
     } catch (error) {
       console.error(error);
       alert(`${error}발생`);

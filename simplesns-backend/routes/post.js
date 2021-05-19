@@ -38,14 +38,11 @@ const upload = multer({
 });
 
 router.post("/img", upload.single("img"), (req, res) => {
-  console.log("@@@@@@@@@@@@@@@@@@@@>>>>", req.file);
   res.json({ url: req.file.location });
 });
 
 const upload2 = multer();
 router.post("/", upload2.none(), async (req, res, next) => {
-  console.log(req.body);
-
   try {
     const verifying = jwt.verify(
       req.headers.authorization,
@@ -57,8 +54,7 @@ router.post("/", upload2.none(), async (req, res, next) => {
       where: { email: verifying.email },
     });
     const _id = await user.getDataValue("id");
-    console.log("!!!!!!!!_>>>>>>>>", user.getDataValue("id"));
-    console.log("!!!!!!!!!!@@@@@@___>>>", req.body.content);
+
     const post = await Post.create({
       //id는 fmk를 넣어야 함.
       userId: _id,
