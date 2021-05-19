@@ -49,6 +49,12 @@ export default function TuiEditor(): JSX.Element {
 
   const savePost = async () => {
     const _htmlContent = toastEditor.getHtml();
+    const _title = title.length < 1 ? "제목을 입력하지 않은 글이에요" : title;
+    const _titleImgUrl = titleImgUrl;
+    if (_titleImgUrl.length < 1) {
+      return alert("하나이상의 사진은 꼭 업로드 해주셔야 합니다.");
+    }
+
     // /post로 post content전부 post 보내기
     const config = {
       headers: {
@@ -62,14 +68,18 @@ export default function TuiEditor(): JSX.Element {
         `${BASE_URL}/post`,
         {
           content: _htmlContent,
+          title: _title,
+          titleImgUrl: _titleImgUrl,
         },
         config
       );
 
       if (response.status !== 200) {
         return alert(`${response.status} Error 발생`);
+      } else {
+        alert("업로드가 완료 되었습니다.");
+        return history.push("/");
       }
-      history.push("/");
     } catch (error) {
       console.error(error);
       alert("Error:!");
@@ -121,7 +131,7 @@ export default function TuiEditor(): JSX.Element {
             <img src={titleImgUrl} alt="title" />
           ) : (
             <div>
-              <span>Make Your Post Main Image!</span>
+              <span>Upload Main Image For Your Post!</span>
             </div>
           )}
         </TitleWrapper>

@@ -9,6 +9,9 @@ import { RootState } from "../../redux/store";
 
 interface contentsData {
   id: number;
+  title: string;
+  titleImgUrl: string;
+  nick: string;
   content: string;
   createdAt: string;
   updatedAt: string;
@@ -30,6 +33,7 @@ export default function Home() {
           key: process.env.CLIENT_SECRET,
         }, //API 요청
       });
+      console.log(response);
       setData(response.data);
     } catch (error) {
       console.error(error);
@@ -42,8 +46,14 @@ export default function Home() {
         <TuiPost />
       </PostContainer>
       <AritcleWrapper>
-        {data.map(({ content, id }) => (
-          <TuiViewer content={content} key={`${id}post Viewer`} />
+        {data.map(({ content, id, title, titleImgUrl }) => (
+          <TuiViewer
+            id={id}
+            content={content}
+            key={`${id}post Viewer`}
+            title={title}
+            titleImgUrl={titleImgUrl}
+          />
         ))}
       </AritcleWrapper>
     </HomeContainer>

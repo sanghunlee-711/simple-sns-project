@@ -1,17 +1,28 @@
 import "@toast-ui/editor/dist/toastui-editor.css"; // Editor's Style
 import "codemirror/lib/codemirror.css";
 import React from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 interface ITuiViewer {
+  id: number;
   content: string;
+  title: string;
+  titleImgUrl: string;
 }
 
-export default function TuiViewer({ content }: ITuiViewer) {
+export default function TuiViewer({
+  content,
+  title,
+  titleImgUrl,
+  id,
+}: ITuiViewer) {
+  const history = useHistory();
+
   return (
     <ViewerContainer>
       <ViewerHeader>
-        <Title>"This is Title"</Title>
+        <Title>{title}</Title>
         <HeaderButtonWrapper>
           <EditButton>
             <i className="fas fa-edit fa-2x"></i>
@@ -21,9 +32,16 @@ export default function TuiViewer({ content }: ITuiViewer) {
           </QuitButton>
         </HeaderButtonWrapper>
       </ViewerHeader>
-      <ViewerWrapper
+      <ViewerMainImageWrapper
+        onClick={() => {
+          history.push(`/article/${id}`);
+        }}
+      >
+        <ViewerMainImage src={titleImgUrl} alt="represent image" />
+      </ViewerMainImageWrapper>
+      {/* <ViewerWrapper
         dangerouslySetInnerHTML={{ __html: content }}
-      ></ViewerWrapper>
+      ></ViewerWrapper> */}
       <ViewerBottom>
         <Id>호읍읍</Id>
         <InputWrapper>
@@ -54,8 +72,9 @@ export default function TuiViewer({ content }: ITuiViewer) {
 const ViewerContainer = styled.article`
   width: 33.333%;
   margin: 5vh;
-  border: 2px solid black;
+  border: 1px solid black;
   border-radius: 2px;
+  height: 100%;
 `;
 
 const ViewerHeader = styled.div`
@@ -65,6 +84,14 @@ const ViewerHeader = styled.div`
   padding: 0.5vw;
 `;
 
+const ViewerMainImageWrapper = styled.div`
+  min-height: 30vh;
+`;
+
+const ViewerMainImage = styled.img`
+  object-fit: scale-down;
+  width: 100%;
+`;
 const ViewerWrapper = styled.div`
   padding: 1vw;
   display: block;
