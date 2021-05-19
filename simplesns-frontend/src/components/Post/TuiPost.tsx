@@ -17,8 +17,8 @@ export default function TuiPost(): JSX.Element {
 const PostContainer = styled.div`
   width: 80%;
   left: 10%;
-  position: absolute;
-  top: 10vh;
+  position: fixed;
+  top: 70px;
   background-color: white;
   border: 1px solid black;
 `;

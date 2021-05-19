@@ -152,7 +152,7 @@ const NavContainer = styled.header`
   right: 0;
   left: 0;
   width: 100vw;
-  min-height: 70px;
+  height: 70px;
   background-color: white;
   z-index: 10;
   display: flex;
