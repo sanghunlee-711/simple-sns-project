@@ -10,7 +10,6 @@ const rootReducer = combineReducers({
 const sagaMiddleWare = createSagaMiddleware();
 
 const store = createStore(rootReducer, applyMiddleware(sagaMiddleWare));
-// const store = createStore(rootReducer);
 
 export default store;
 

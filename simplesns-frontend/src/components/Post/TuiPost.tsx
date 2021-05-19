@@ -1,30 +1,24 @@
 import "@toast-ui/editor/dist/toastui-editor.css"; // Editor's Style
 import "codemirror/lib/codemirror.css";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import styled from "styled-components";
 import TuiEditor from "./components/TuiEditor";
 
-interface ImageProps {
-  value: string;
-  src: string;
-}
-export default function TuiPost() {
-  const [files, setFiles] = useState<FileList[]>([]);
-  const [imgData, setImageData] = useState<ImageProps[]>([]);
-  const dispatch = useDispatch();
-
+export default function TuiPost(): JSX.Element {
   return (
-    <PostContainer>
-      <div>
+    <>
+      <PostContainer>
         <TuiEditor />
-      </div>
-    </PostContainer>
+      </PostContainer>
+    </>
   );
 }
 
 const PostContainer = styled.div`
-  width: 100%;
-  display: flex;
-  position: relative;
+  width: 80%;
+  left: 10%;
+  position: fixed;
+  top: 70px;
+  background-color: white;
+  border: 1px solid black;
 `;
