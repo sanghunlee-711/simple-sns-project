@@ -37,6 +37,30 @@ const upload = multer({
   }),
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const post = await Post.findOne({
+      where: { id: req.params.id },
+      include: {
+        model: User,
+        attributes: ["email", "nick", "id"],
+      },
+    });
+    console.log(post);
+    if (!post) {
+      return res.status(404).json({
+        code: 404,
+        message: "게시글을 찾을 수 없습니다 다시 시도 해주세요.",
+      });
+    } else {
+      return res.json(post);
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.post("/img", upload.single("img"), (req, res) => {
   res.json({ url: req.file.location });
 });
@@ -48,17 +72,20 @@ router.post("/", upload2.none(), async (req, res, next) => {
       req.headers.authorization,
       process.env.JWT_SECRET
     );
-
+    console.log("@@@@@@@@@@@verifying", verifying);
     const user = await User.findOne({
       attributes: ["id"],
       where: { email: verifying.email },
     });
     const _id = await user.getDataValue("id");
-
+    console.log("@@@@@@@@ IN POST", user);
+    console.log("!!!!!!!_______>>>>>>.", _id);
     const post = await Post.create({
-      //id는 fmk를 넣어야 함.
-      userId: _id,
+      //id는 user테이블의 fmk를 넣어야 함.
+      UserId: _id,
+      title: req.body.title,
       content: req.body.content,
+      titleImgUrl: req.body.titleImgUrl,
     });
 
     //해시태그를 정규표현식으로 추출해내기

@@ -6,10 +6,18 @@ module.exports = class Post extends (
   static init(sequelize) {
     return super.init(
       {
+        title: {
+          type: Sequelize.STRING(50),
+          allowNull: true,
+        },
         content: {
           //tui editor tag 저장 위한 타입 변경
           type: Sequelize.TEXT,
           allowNull: true,
+        },
+        titleImgUrl: {
+          type: Sequelize.STRING(200),
+          allowNull: false,
         },
       },
       {

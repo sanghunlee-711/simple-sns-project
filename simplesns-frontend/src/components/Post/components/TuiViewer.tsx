@@ -92,18 +92,6 @@ const ViewerMainImage = styled.img`
   object-fit: scale-down;
   width: 100%;
 `;
-const ViewerWrapper = styled.div`
-  padding: 1vw;
-  display: block;
-  overflow: scroll;
-  border-top: 2px solid black;
-  border-bottom: 2px solid black;
-  height: 50vh;
-  img {
-    width: 100%;
-    height: 100%;
-  }
-`;
 
 const ViewerBottom = styled.div`
   display: flex;
