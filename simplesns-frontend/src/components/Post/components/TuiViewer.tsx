@@ -51,19 +51,6 @@ export default function TuiViewer({ content }: ITuiViewer) {
   );
 }
 
-const ViewerWrapper = styled.div`
-  padding: 1vw;
-  display: block;
-  overflow: scroll;
-  border-top: 2px solid black;
-  border-bottom: 2px solid black;
-  height: 50vh;
-  img {
-    width: 100%;
-    height: 100%;
-  }
-`;
-
 const ViewerContainer = styled.article`
   width: 33.333%;
   margin: 5vh;
@@ -78,6 +65,19 @@ const ViewerHeader = styled.div`
   padding: 0.5vw;
 `;
 
+const ViewerWrapper = styled.div`
+  padding: 1vw;
+  display: block;
+  overflow: scroll;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  height: 50vh;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
 const ViewerBottom = styled.div`
   display: flex;
   flex-direction: column;
@@ -90,16 +90,6 @@ const Title = styled.span`
   font-family: "Newsreader", serif;
 `;
 
-const EditButton = styled.button`
-  background-color: white;
-  border: none;
-
-  &:hover {
-    color: gray;
-    transition: all 0.3s ease-in-out;
-  }
-`;
-
 const Id = styled.div`
   color: black;
   font-size: 16px;
@@ -110,26 +100,7 @@ const Id = styled.div`
   margin-bottom: 1vw;
 `;
 
-const QuitButton = styled.button`
-  background-color: white;
-  border: none;
-
-  &:hover {
-    color: gray;
-    transition: all 0.3s ease-in-out;
-  }
-`;
 const HeaderButtonWrapper = styled.div``;
-
-const CommentButton = styled.button`
-  background-color: white;
-  border: none;
-
-  &:hover {
-    color: gray;
-    transition: all 0.3s ease-in-out;
-  }
-`;
 
 const InputWrapper = styled.div`
   width: 100%;
@@ -148,18 +119,6 @@ const CommentsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
-
-const CommentsButtonWrapper = styled.div`
-  button {
-    background-color: white;
-    border: none;
-
-    &:hover {
-      color: gray;
-      transition: all 0.3s ease-in-out;
-    }
-  }
 `;
 
 const CommentsWrapper = styled.div`
@@ -183,5 +142,47 @@ const CommentsWrapper = styled.div`
       font-size: 1.2rem;
       font-family: "Newsreader", serif;
     }
+  }
+`;
+
+const CommentsButtonWrapper = styled.div`
+  button {
+    background-color: white;
+    border: none;
+
+    &:hover {
+      color: gray;
+      transition: all 0.3s ease-in-out;
+    }
+  }
+`;
+
+const QuitButton = styled.button`
+  background-color: white;
+  border: none;
+
+  &:hover {
+    color: gray;
+    transition: all 0.3s ease-in-out;
+  }
+`;
+
+const CommentButton = styled.button`
+  background-color: white;
+  border: none;
+
+  &:hover {
+    color: gray;
+    transition: all 0.3s ease-in-out;
+  }
+`;
+
+const EditButton = styled.button`
+  background-color: white;
+  border: none;
+
+  &:hover {
+    color: gray;
+    transition: all 0.3s ease-in-out;
   }
 `;

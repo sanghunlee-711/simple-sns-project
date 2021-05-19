@@ -178,6 +178,7 @@ const BurgetNavContainer = styled.nav<{ show: boolean }>`
   top: 0;
   bottom: 0;
   width: 490px;
+  height: 100%;
   background-color: white;
   z-index: 10;
   border-left: 1px solid gray;

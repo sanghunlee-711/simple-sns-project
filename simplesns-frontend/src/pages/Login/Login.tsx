@@ -45,20 +45,26 @@ export default function Login() {
     <CompoentWrapper>
       <h1>Login</h1>
       <InputWrapper>
-        <input name="id" value={id} onChange={(e) => handleInputChange(e)} />
-        <input
-          type="password"
-          name="pw"
-          value={pw}
-          onChange={(e) => handleInputChange(e)}
-        />
+        <div>
+          <label>ID</label>
+          <input name="id" value={id} onChange={(e) => handleInputChange(e)} />
+        </div>
+        <div>
+          <label>PW</label>
+          <input
+            type="password"
+            name="pw"
+            value={pw}
+            onChange={(e) => handleInputChange(e)}
+          />
+        </div>
       </InputWrapper>
       <ButtonWrapper>
         <button name="login" onClick={() => doLogin()}>
-          로그인
+          DO LOGIN
         </button>
         <button name="join" onClick={() => history.push("/join")}>
-          회원가입
+          GO JOIN
         </button>
       </ButtonWrapper>
     </CompoentWrapper>
@@ -66,16 +72,18 @@ export default function Login() {
 }
 
 const CompoentWrapper = styled.div`
-  width: 80vw;
-  height: 80vh;
-  background-color: wheat;
+  width: calc(80vw -70px);
+  height: 100vh;
+  background-color: white;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   h1 {
-    font-size: 40px;
+    font-family: "Newsreader", serif;
+    font-size: 5rem;
+    margin: 10vh 0;
   }
 `;
 
@@ -84,8 +92,49 @@ const InputWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  font-family: "Newsreader", serif;
+
+  > div {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2vh 0;
+    label {
+      font-size: 2.7rem;
+      font-weight: bolder;
+    }
+    input {
+      margin-left: 3vw;
+      width: 30vw;
+      height: 6vh;
+      font-family: "Newsreader", serif;
+      font-size: 2rem;
+    }
+  }
 `;
 
 const ButtonWrapper = styled(InputWrapper)`
   flex-direction: row;
+  margin: 5vh 0;
+  button {
+    margin: 0 1vw;
+    background-color: white;
+    border: 1.5px solid black;
+    color: black;
+    border-radius: 2px;
+    transition: all 0.5s ease-in-out;
+    /* max-width: 40px;
+    max-height: 32px; */
+    width: 18vw;
+    height: 8vh;
+    font-size: 2rem;
+    font-weight: bolder;
+    font-family: "Newsreader", serif;
+
+    &:hover {
+      color: white;
+      background-color: black;
+    }
+  }
 `;

@@ -29,7 +29,7 @@ const FooterContainer = styled.footer`
 
 const FootWrapper = styled.div`
   width: 80%;
-  min-height: 70px;
+  height: 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
