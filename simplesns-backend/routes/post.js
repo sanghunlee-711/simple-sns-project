@@ -1,8 +1,6 @@
 const express = require("express");
-const session = require("express-session");
 const multer = require("multer");
-const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
-const { Post, Hashtag } = require("../models");
+const { Post, Hashtag, User } = require("../models");
 const fs = require("fs");
 const AWS = require("aws-sdk");
 const multerS3 = require("multer-s3");
@@ -10,7 +8,6 @@ const path = require("path");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { verify } = require("crypto");
-const User = require("../models/user");
 
 const router = express.Router();
 
@@ -37,7 +34,7 @@ const upload = multer({
   }),
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const post = await Post.findOne({
       where: { id: req.params.id },
@@ -109,6 +106,51 @@ router.post("/", upload2.none(), async (req, res, next) => {
         message: "게시글 업로드 완료",
       });
       return res.redirect("/");
+    } else {
+      return res.status(400).json({
+        code: 400,
+        message: "에러발생",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.delete("/delete/:id", async (req, res, next) => {
+  try {
+    const verifying = jwt.verify(
+      req.headers.authorization,
+      process.env.JWT_SECRET
+    );
+
+    const user = await User.findOne({
+      attributes: ["id"],
+      where: { email: verifying.email },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        code: 404,
+        message: "존재하지 않는 유저입니다.",
+      });
+    }
+
+    const _id = await user.getDataValue("id");
+
+    const deletePost = await Post.destroy({
+      where: {
+        id: req.params.id,
+        UserId: _id,
+      },
+    });
+
+    if (deletePost) {
+      return res.status(200).json({
+        code: 200,
+        message: `${req.params.id}번 게시글 삭제가 완료되었습니다.`,
+      });
     } else {
       return res.status(400).json({
         code: 400,

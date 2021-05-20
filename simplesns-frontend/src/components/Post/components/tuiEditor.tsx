@@ -72,7 +72,7 @@ export default function TuiEditor(): JSX.Element {
         },
         config
       );
-
+      console.log("DELEELELELETETETE RESPONSSESE", response);
       if (response.status !== 200) {
         return alert(`${response.status} Error 발생`);
       } else {
