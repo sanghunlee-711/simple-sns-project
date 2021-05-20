@@ -1,8 +1,10 @@
 import "@toast-ui/editor/dist/toastui-editor.css"; // Editor's Style
+import axios from "axios";
 import "codemirror/lib/codemirror.css";
 import React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
+import { BASE_URL, CLIENT_SECRET } from "../../../config/config.json";
 
 interface ITuiViewer {
   id: number;
@@ -19,6 +21,39 @@ export default function TuiViewer({
 }: ITuiViewer) {
   const history = useHistory();
 
+  const deletePost = async () => {
+    const _postId = id;
+
+    if (!_postId) {
+      return alert("게시글이 존재하지 않습니다.");
+    }
+
+    try {
+      const config = {
+        headers: {
+          authorization: sessionStorage.getItem("token"),
+          key: CLIENT_SECRET,
+        },
+      };
+      const response = await axios.delete(
+        `${BASE_URL}/post/delete/${_postId}`,
+        config
+      );
+
+      if (response.status === 200) {
+        history.push("/");
+        return window.location.reload();
+      }
+
+      console.log("delete REsponse!!!", response);
+    } catch (error) {
+      console.error(error);
+      alert("Error:!");
+    }
+
+    console.log("id", _postId);
+  };
+
   return (
     <ViewerContainer>
       <ViewerHeader>
@@ -27,7 +62,7 @@ export default function TuiViewer({
           <EditButton>
             <i className="fas fa-edit fa-2x"></i>
           </EditButton>
-          <QuitButton>
+          <QuitButton onClick={() => deletePost()}>
             <i className="fas fa-times fa-2x"></i>
           </QuitButton>
         </HeaderButtonWrapper>
@@ -39,9 +74,6 @@ export default function TuiViewer({
       >
         <ViewerMainImage src={titleImgUrl} alt="represent image" />
       </ViewerMainImageWrapper>
-      {/* <ViewerWrapper
-        dangerouslySetInnerHTML={{ __html: content }}
-      ></ViewerWrapper> */}
       <ViewerBottom>
         <Id>호읍읍</Id>
         <InputWrapper>
