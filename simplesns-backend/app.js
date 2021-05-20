@@ -10,6 +10,7 @@ dotenv.config(); //for setting .env file
 const pageRouter = require("./routes/page"); //setting for pageRouter ;
 const authRouter = require("./routes/auth");
 const postRouter = require("./routes/post");
+const commentRouter = require("./routes/comment");
 
 const passportConfig = require("./passport");
 const { sequelize } = require("./models");
@@ -59,7 +60,7 @@ app.use(passport.session());
 app.use("/", pageRouter);
 app.use("/auth", authRouter);
 app.use("/post", postRouter);
-
+app.use("/comment", commentRouter);
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
   error.status = 404;

@@ -43,6 +43,7 @@ router.get("/:id", async (req, res, next) => {
         attributes: ["email", "nick", "id"],
       },
     });
+
     console.log(post);
     if (!post) {
       return res.status(404).json({
