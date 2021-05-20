@@ -1,49 +1,21 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 import PostPortal from "../../components/Post/components/PostPortal";
-import { BASE_URL } from "../../config/config.json";
-import { togglePost } from "../../redux/reducer/navReducer";
+import { toggleBurger, togglePost } from "../../redux/reducer/navReducer";
 import { RootState } from "../../redux/store";
 import TuiPost from "../Post/TuiPost";
+import BurgerNav from "./components/BurgerNav";
+import BurgerPortal from "./components/BurgetPortal";
 
-export default function Nav() {
-  const [nick, setNick] = useState("");
-  const token = sessionStorage.getItem("token");
-  const [buggerToggle, setBurgerToggle] = useState<boolean>(false);
+export default function Nav(): JSX.Element {
   const history = useHistory();
   const postToggle = useSelector((state: RootState) => state.navReducer.toggle);
+  const burgerToggle = useSelector(
+    (state: RootState) => state.navReducer.burgerToggle
+  );
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    setNick(sessionStorage.getItem("nick") as string);
-  }, []);
-
-  const doLogOut = async (): Promise<void> => {
-    if (sessionStorage.getItem("token")) {
-      const url = `${BASE_URL}/auth/logout`;
-      const response = await axios.get(url, {
-        headers: {
-          authorization: sessionStorage.getItem("token"),
-          key: process.env.CLIENT_SECRET,
-        },
-      });
-
-      if (response.status === 200) {
-        sessionStorage.removeItem("nick");
-        sessionStorage.removeItem("token");
-        alert("로그아웃 완료");
-        window.location.reload();
-        return history.push("/");
-      } else {
-        alert("로그인 상태가 아닙니다.");
-      }
-    } else {
-      alert("로그인 상태가 아닙니다.");
-    }
-  };
 
   return (
     <>
@@ -58,59 +30,19 @@ export default function Nav() {
             >
               Post
             </PostButton>
-            <BurgerButtonWrapper onClick={() => setBurgerToggle(!buggerToggle)}>
+            <BurgerButtonWrapper
+              onClick={() => dispatch(toggleBurger(!burgerToggle))}
+            >
               <i className="fas fa-bars fa-2x"></i>
             </BurgerButtonWrapper>
           </NavButtonWrapper>
         </NavWrapper>
       </NavContainer>
-      <BurgetNavContainer show={buggerToggle}>
-        <QuitButton onClick={() => setBurgerToggle(!buggerToggle)}>
-          <i className="fas fa-times fa-2x"></i>
-        </QuitButton>
-        <ProfileContainer>
-          <ProfileWrapper>
-            <ProfileImage />
-            <div>
-              <span>안녕하세요!</span>
-              &nbsp;
-              <span>{sessionStorage.getItem("nick")}님</span>
-            </div>
-            <div>
-              <div>
-                <span>팔로잉</span>
-                <span>100명</span>
-              </div>
-              <div>
-                <span>팔로워</span>
-                <span>120명</span>
-              </div>
-            </div>
-          </ProfileWrapper>
-          <ButtonWrapper>
-            <Button
-              onClick={
-                token
-                  ? () => doLogOut()
-                  : () => {
-                      history.push("/login");
-                      setBurgerToggle(!buggerToggle);
-                    }
-              }
-            >
-              {token ? "LOGOUT" : "LOGIN"}
-            </Button>
-            <Button
-              onClick={() => {
-                history.push("/join");
-                setBurgerToggle(!buggerToggle);
-              }}
-            >
-              Join
-            </Button>
-          </ButtonWrapper>
-        </ProfileContainer>
-      </BurgetNavContainer>
+      {burgerToggle && (
+        <BurgerPortal>
+          <BurgerNav />
+        </BurgerPortal>
+      )}
       {postToggle && (
         <PostPortal>
           <TuiPost />
@@ -126,14 +58,6 @@ const NavButtonWrapper = styled.div`
   button {
     margin-right: 3vw;
   }
-`;
-
-const ProfileImage = styled.div`
-  width: 100px;
-  height: 100px;
-  border-radius: 100%;
-  margin: 20px 0;
-  background-color: black;
 `;
 
 const BurgerButtonWrapper = styled.div``;
@@ -180,76 +104,10 @@ const NavContainer = styled.header`
     }
   }
 `;
-
-const BurgetNavContainer = styled.nav<{ show: boolean }>`
-  display: ${({ show }) => (show ? "flex" : "none")};
-  justify-content: flex-start;
-  align-items: center;
-  flex-direction: column;
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 490px;
-  height: 100%;
-  background-color: white;
-  z-index: 10;
-  border-left: 1px solid gray;
-`;
-
-const Button = styled.button`
-  border: 1px solid black;
-  height: 60px;
-  width: 160px;
-  background-color: white;
-  border: 1px solid black;
-  transition: all 0.5s ease-in-out;
-  font-size: 20px;
-
-  &:hover {
-    background-color: black;
-    border: 1px solid black;
-    color: white;
-  }
-`;
-
-const QuitButton = styled.button`
-  background-color: white;
-  border: none;
-  position: absolute;
-  right: 30px;
-  top: 30px;
-
-  &:hover {
-    color: gray;
-    transition: all 0.3s ease-in-out;
-  }
-`;
-
 const Logo = styled.div`
   font-size: 30px;
   font-weight: bold;
   cursor: pointer;
-`;
-
-const ProfileContainer = styled.section`
-  width: 80%;
-  margin-top: 4vw;
-`;
-
-const ProfileWrapper = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  flex-direction: column;
-  width: calc(490px * 0.8);
-`;
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  width: calc(490px * 0.8);
-  margin: 3vw 0;
 `;
 
 const PostButton = styled.button`
