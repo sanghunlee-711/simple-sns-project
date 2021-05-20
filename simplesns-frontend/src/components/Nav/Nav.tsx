@@ -9,7 +9,7 @@ import TuiPost from "../Post/TuiPost";
 import BurgerNav from "./components/BurgerNav";
 import BurgerPortal from "./components/BurgetPortal";
 
-export default function Nav() {
+export default function Nav(): JSX.Element {
   const history = useHistory();
   const postToggle = useSelector((state: RootState) => state.navReducer.toggle);
   const burgerToggle = useSelector(

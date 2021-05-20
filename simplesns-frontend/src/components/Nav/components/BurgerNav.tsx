@@ -7,7 +7,7 @@ import { BASE_URL } from "../../../config/config.json";
 import { toggleBurger } from "../../../redux/reducer/navReducer";
 import { RootState } from "../../../redux/store";
 
-export default function BurgerNav() {
+export default function BurgerNav(): JSX.Element {
   const token = sessionStorage.getItem("token");
   const burgerToggle = useSelector(
     (state: RootState) => state.navReducer.burgerToggle
