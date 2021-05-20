@@ -1,6 +1,17 @@
 import { all, fork, take } from "redux-saga/effects";
 
 export const types = {
+  //전체 로그아웃
+  LOGOUT: "auth/LOGOUT",
+  //전체 로그인
+  LOGIN: "auth/LOGIN",
+  //포스트 게시글을 위한 에디터 컨텐츠 업로드
+  UPLOAD: "post/UPLOAD",
+  //메인에서 전체 게시글 가져오는 액션
+  GET_POST: "post/GET_POST",
+  //세부보기 들어가서 하나의 게시글 내용 가져오는 액션
+  GET_EACH_POST: "article/GET_EACH_POST",
+
   //redux saga에서 사용하기 위해 모든 액션타입을 하나의 객체에 담아서 내보낸다.
   INCREASE_NEXT_PAGE: "timeline/INCREASE_NEXT_PAGE",
   //좋아요 버튼 클릭 시 발생하는 액션타입이다. 아래액션타입은 사가에서만 사용되고 리듀서함수에는 사용되지않는다.
