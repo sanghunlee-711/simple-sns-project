@@ -1,7 +1,7 @@
 import "@toast-ui/editor/dist/toastui-editor.css"; // Editor's Style
 import axios from "axios";
 import "codemirror/lib/codemirror.css";
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { BASE_URL, CLIENT_SECRET } from "../../../config/config.json";
@@ -20,6 +20,7 @@ export default function TuiViewer({
   id,
 }: ITuiViewer) {
   const history = useHistory();
+  const [inputComment, setInputComment] = useState<string>("");
 
   const deletePost = async () => {
     const _postId = id;
@@ -37,6 +38,44 @@ export default function TuiViewer({
       };
       const response = await axios.delete(
         `${BASE_URL}/post/delete/${_postId}`,
+        config
+      );
+
+      if (response.status === 200) {
+        history.push("/");
+        return window.location.reload();
+      }
+
+      console.log("delete REsponse!!!", response);
+    } catch (error) {
+      console.error(error);
+      alert("Error:!");
+    }
+
+    console.log("id", _postId);
+  };
+
+  const addComment = async () => {
+    const _postId = id;
+
+    if (!_postId) {
+      return alert("게시글이 존재하지 않습니다.");
+    }
+
+    try {
+      const config = {
+        headers: {
+          authorization: sessionStorage.getItem("token"),
+          key: CLIENT_SECRET,
+        },
+      };
+
+      const response = await axios.post(
+        `${BASE_URL}/comment`,
+        {
+          postId: _postId,
+          comment: inputComment,
+        },
         config
       );
 
@@ -77,8 +116,14 @@ export default function TuiViewer({
       <ViewerBottom>
         <Id>호읍읍</Id>
         <InputWrapper>
-          <input type="text" />
-          <CommentButton>
+          <input
+            type="text"
+            value={inputComment}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setInputComment(e.target.value)
+            }
+          />
+          <CommentButton onClick={() => addComment()}>
             <i className="far fa-comment fa-2x"></i>
           </CommentButton>
         </InputWrapper>
