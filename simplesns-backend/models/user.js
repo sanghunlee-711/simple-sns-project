@@ -46,7 +46,10 @@ module.exports = class User extends (
   static associate(db) {
     //1:N = users: posts
     db.User.hasMany(db.Post);
-    //N:M = following : follower
+    //1:M = users: comments
+    db.User.hasMany(db.Comment);
+
+    //L:K = following : follower
     db.User.belongsToMany(db.User, {
       foreignKey: "followingId",
       as: "Followers",

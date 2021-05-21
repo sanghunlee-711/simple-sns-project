@@ -2,15 +2,20 @@ import "@toast-ui/editor/dist/toastui-editor.css"; // Editor's Style
 import axios from "axios";
 import "codemirror/lib/codemirror.css";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { BASE_URL, CLIENT_SECRET } from "../../../config/config.json";
+import { BASE_URL } from "../../../config/config.json";
+import { CommentsData } from "../../../model/ArticleModel";
+import { actions } from "../../../redux/reducer/commentReducer";
+import { config } from "../../../utils/util";
 
 interface ITuiViewer {
   id: number;
   content: string;
   title: string;
   titleImgUrl: string;
+  comments: CommentsData[];
 }
 
 export default function TuiViewer({
@@ -18,8 +23,10 @@ export default function TuiViewer({
   title,
   titleImgUrl,
   id,
+  comments,
 }: ITuiViewer) {
   const history = useHistory();
+  const dispatch = useDispatch();
   const [inputComment, setInputComment] = useState<string>("");
 
   const deletePost = async () => {
@@ -30,52 +37,8 @@ export default function TuiViewer({
     }
 
     try {
-      const config = {
-        headers: {
-          authorization: sessionStorage.getItem("token"),
-          key: CLIENT_SECRET,
-        },
-      };
       const response = await axios.delete(
         `${BASE_URL}/post/delete/${_postId}`,
-        config
-      );
-
-      if (response.status === 200) {
-        history.push("/");
-        return window.location.reload();
-      }
-
-      console.log("delete REsponse!!!", response);
-    } catch (error) {
-      console.error(error);
-      alert("Error:!");
-    }
-
-    console.log("id", _postId);
-  };
-
-  const addComment = async () => {
-    const _postId = id;
-
-    if (!_postId) {
-      return alert("게시글이 존재하지 않습니다.");
-    }
-
-    try {
-      const config = {
-        headers: {
-          authorization: sessionStorage.getItem("token"),
-          key: CLIENT_SECRET,
-        },
-      };
-
-      const response = await axios.post(
-        `${BASE_URL}/comment`,
-        {
-          postId: _postId,
-          comment: inputComment,
-        },
         config
       );
 
@@ -119,28 +82,41 @@ export default function TuiViewer({
           <input
             type="text"
             value={inputComment}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setInputComment(e.target.value)
-            }
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setInputComment(e.target.value);
+            }}
           />
-          <CommentButton onClick={() => addComment()}>
+          <CommentButton
+            onClick={() => {
+              dispatch(actions.postCommentData(id, inputComment));
+            }}
+          >
             <i className="far fa-comment fa-2x"></i>
           </CommentButton>
         </InputWrapper>
-        <CommentsContainer>
-          <CommentsWrapper>
-            <span>dltkdgnszlzl@naver.com</span>
-            <span>commentscommentscommentscomments</span>
-          </CommentsWrapper>
-          <CommentsButtonWrapper>
-            <button>
-              <i className="fas fa-edit "></i>
-            </button>
-            <button>
-              <i className="fas fa-times "></i>
-            </button>
-          </CommentsButtonWrapper>
-        </CommentsContainer>
+        {comments.map(({ comment, User, id }) => (
+          <CommentsContainer>
+            <CommentsWrapper>
+              <span>
+                {User.nick}
+                {id}
+              </span>
+              <span>{comment}</span>
+            </CommentsWrapper>
+            <CommentsButtonWrapper>
+              <button>
+                <i className="fas fa-edit "></i>
+              </button>
+              <button
+                onClick={() => {
+                  dispatch(actions.deleteCommentData(id));
+                }}
+              >
+                <i className="fas fa-times "></i>
+              </button>
+            </CommentsButtonWrapper>
+          </CommentsContainer>
+        ))}
       </ViewerBottom>
     </ViewerContainer>
   );
@@ -211,6 +187,7 @@ const CommentsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0vw 0.5vw;
 `;
 
 const CommentsWrapper = styled.div`
@@ -218,10 +195,11 @@ const CommentsWrapper = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  margin: 1vw 0 1vw 0.5vw;
+  /* margin: 0 0.5vw; */
   span {
+    line-height: 2;
     &:first-child {
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-family: "Newsreader", serif;
       font-weight: bolder;
       text-overflow: ellipsis;
@@ -231,7 +209,7 @@ const CommentsWrapper = styled.div`
 
     &:last-child {
       margin-left: 1vw;
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-family: "Newsreader", serif;
     }
   }

@@ -3,19 +3,10 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import TuiViewer from "../../components/Post/components/TuiViewer";
 import { BASE_URL } from "../../config/config.json";
-
-interface contentsData {
-  id: number;
-  title: string;
-  titleImgUrl: string;
-  nick: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { ContentsData } from "../../model/ArticleModel";
 
 export default function Home() {
-  const [data, setData] = useState<contentsData[]>([]);
+  const [data, setData] = useState<ContentsData[]>([]);
 
   useEffect(() => {
     getData();
@@ -28,7 +19,6 @@ export default function Home() {
           key: process.env.CLIENT_SECRET,
         }, //API 요청
       });
-      console.log(response);
       setData(response.data);
     } catch (error) {
       console.error(error);
@@ -38,13 +28,14 @@ export default function Home() {
   return (
     <HomeContainer>
       <AritcleWrapper>
-        {data.map(({ content, id, title, titleImgUrl }) => (
+        {data.map(({ content, id, title, titleImgUrl, Comments }) => (
           <TuiViewer
             id={id}
             content={content}
             key={`${id}post Viewer`}
             title={title}
             titleImgUrl={titleImgUrl}
+            comments={Comments}
           />
         ))}
       </AritcleWrapper>

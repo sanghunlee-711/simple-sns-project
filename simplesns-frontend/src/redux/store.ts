@@ -1,7 +1,7 @@
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import createSagaMiddleware from "redux-saga";
 import navReducer from "./reducer/navReducer";
-import { navSaga } from "./saga/navSaga";
+import { commentSaga } from "./saga/commentSaga";
 const rootReducer = combineReducers({
   navReducer,
 });
@@ -15,4 +15,4 @@ export default store;
 
 export type RootState = ReturnType<typeof rootReducer>;
 
-sagaMiddleWare.run(navSaga);
+sagaMiddleWare.run(commentSaga);

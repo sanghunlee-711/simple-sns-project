@@ -149,7 +149,7 @@ const QuitButton = styled.button`
 
 const ProfileContainer = styled.section`
   width: 80%;
-  margin-top: 4vw;
+  margin: 4vw auto;
 `;
 
 const ProfileWrapper = styled.div`
