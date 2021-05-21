@@ -50,4 +50,42 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+router.delete("/delete/:id", async (req, res, next) => {
+  try {
+    const verifying = jwt.verify(
+      req.headers.authorization,
+      process.env.JWT_SECRET
+    );
+
+    const user = await User.findOne({
+      attributes: ["id"],
+      where: { email: verifying.email },
+    });
+
+    const _id = await user.getDataValue("id");
+
+    const deleteComment = await Comment.destroy({
+      where: {
+        id: req.params.id,
+        UserId: _id,
+      },
+    });
+
+    if (deleteComment) {
+      return res.status(200).json({
+        code: 200,
+        message: `${req.params.id}번 게시글 삭제가 완료되었습니다.`,
+      });
+    } else {
+      return res.status(400).json({
+        code: 400,
+        message: "에러 발생",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 module.exports = router;

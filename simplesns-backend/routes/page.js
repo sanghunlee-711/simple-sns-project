@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { Post, User, Hashtag } = require("../models");
+const { Post, User, Hashtag, Comment } = require("../models");
 const jwt = require("jsonwebtoken");
 const { verifyToken, isLoggedIn } = require("./middlewares");
 
@@ -11,10 +11,20 @@ router.get("/", verifyToken, async (req, res, next) => {
     const posts = await Post.findAll({
       include: {
         model: User,
-        attributes: ["id", "nick"],
+        attributes: ["id", "nick", "email"],
+      },
+      include: {
+        model: Comment,
+        attributes: ["PostId", "comment", "createdAt", "updatedAt", "id"],
+
+        include: {
+          model: User,
+          attributes: ["id", "nick", "email"],
+        },
       },
       order: [["createdAt", "DESC"]],
     });
+
     if (posts) {
       res.json(posts);
     } else {

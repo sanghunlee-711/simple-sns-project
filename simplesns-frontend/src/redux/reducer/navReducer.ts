@@ -6,17 +6,30 @@ interface NavState {
 }
 
 //Action Type
-const DOTOGGLE_POST = "nav/DOTOGGLE_POST" as const;
-const BURGERTOGGLE_POST = "nav/BURGERTOGGLE_POST" as const;
+export const types = {
+  DOTOGGLE_POST: "nav/DOTOGGLE_POST" as const,
+  BURGERTOGGLE_POST: "nav/BURGERTOGGLE_POST" as const,
+  //전체 로그아웃
+  LOGOUT: "auth/LOGOUT" as const,
+  //전체 로그인
+  LOGIN: "auth/LOGIN" as const,
+  //포스트 게시글을 위한 에디터 컨텐츠 업로드
+  UPLOAD: "post/UPLOAD" as const,
+  //메인에서 전체 게시글 가져오는 액션
+  GET_POST: "post/GET_POST" as const,
+  //세부보기 들어가서 하나의 게시글 내용 가져오는 액션
+  GET_EACH_POST: "article/GET_EACH_POST" as const,
+  POST_COMMENT: "comment/POST_COMMENT" as const,
+};
 
 //Action Creator
 export const togglePost = (toggle: boolean) => ({
-  type: DOTOGGLE_POST,
+  type: types.DOTOGGLE_POST,
   payload: toggle,
 });
 
 export const toggleBurger = (burgetToggle: boolean) => ({
-  type: BURGERTOGGLE_POST,
+  type: types.BURGERTOGGLE_POST,
   payload: burgetToggle,
 });
 
