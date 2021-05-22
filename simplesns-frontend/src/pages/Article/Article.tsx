@@ -56,7 +56,7 @@ export default function Article() {
   const { email, nick } = userData;
 
   return (
-    <ArticleContainer onClick={() => console.log(userData)}>
+    <ArticleContainer>
       <HeaderWrapper>
         <Title>{title}</Title>
         <UserInfoWrapper>

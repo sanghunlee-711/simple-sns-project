@@ -1,6 +1,6 @@
 import axios from "axios";
-import { BASE_URL } from "../config/config.json";
-import { config } from "../utils/util";
+import { BASE_URL } from "../../config/config.json";
+import { config } from "../util";
 
 export const PostCommentData = async (postId: string, inputComment: string) => {
   const body = {
@@ -28,6 +28,12 @@ export const PutCommentData = async (
     comment: changedComment,
   };
   const response = await axios.put(url, body, config);
+
+  return response;
+};
+
+export const CheckToken = async () => {
+  const response = await axios.get(`${BASE_URL}/auth/token`, config);
 
   return response;
 };

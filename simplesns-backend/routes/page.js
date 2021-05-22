@@ -7,21 +7,24 @@ const { verifyToken, isLoggedIn } = require("./middlewares");
 const router = express.Router();
 
 router.get("/", verifyToken, async (req, res, next) => {
+  //https://stackoverflow.com/questions/25880539/join-across-multiple-junction-tables-with-sequelize
   try {
     const posts = await Post.findAll({
-      include: {
-        model: User,
-        attributes: ["id", "nick", "email"],
-      },
-      include: {
-        model: Comment,
-        attributes: ["PostId", "comment", "createdAt", "updatedAt", "id"],
-
-        include: {
+      include: [
+        {
           model: User,
           attributes: ["id", "nick", "email"],
         },
-      },
+        {
+          model: Comment,
+          attributes: ["PostId", "comment", "createdAt", "updatedAt", "id"],
+          include: {
+            model: User,
+            attributes: ["id", "nick", "email"],
+          },
+        },
+      ],
+
       order: [["createdAt", "DESC"]],
     });
 

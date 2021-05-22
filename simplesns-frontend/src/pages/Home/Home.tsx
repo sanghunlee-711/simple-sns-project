@@ -11,6 +11,7 @@ export default function Home() {
   useEffect(() => {
     getData();
   }, []);
+
   const getData = async () => {
     try {
       const response = await axios.get(BASE_URL, {
@@ -20,6 +21,7 @@ export default function Home() {
         }, //API 요청
       });
       setData(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -28,17 +30,20 @@ export default function Home() {
   return (
     <HomeContainer>
       <AritcleWrapper>
-        {data.map(({ content, id, title, titleImgUrl, Comments, nick }) => (
-          <TuiViewer
-            nick={nick}
-            id={id}
-            content={content}
-            key={`${id}post Viewer`}
-            title={title}
-            titleImgUrl={titleImgUrl}
-            comments={Comments}
-          />
-        ))}
+        {data.map(
+          ({ content, id, title, titleImgUrl, Comments, nick, User }) => (
+            <TuiViewer
+              User={User}
+              nick={nick}
+              id={id}
+              content={content}
+              key={`${id}post Viewer`}
+              title={title}
+              titleImgUrl={titleImgUrl}
+              comments={Comments}
+            />
+          )
+        )}
       </AritcleWrapper>
     </HomeContainer>
   );
