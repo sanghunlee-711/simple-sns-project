@@ -13,7 +13,6 @@ export default function TuiEditor(): JSX.Element {
   const [title, setTitle] = useState("");
   const [titleImgUrl, setTitleImgUrl] = useState<string>("");
   const history = useHistory();
-  let ssh = "ssh";
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

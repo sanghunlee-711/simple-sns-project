@@ -28,8 +28,9 @@ export default function Home() {
   return (
     <HomeContainer>
       <AritcleWrapper>
-        {data.map(({ content, id, title, titleImgUrl, Comments }) => (
+        {data.map(({ content, id, title, titleImgUrl, Comments, nick }) => (
           <TuiViewer
+            nick={nick}
             id={id}
             content={content}
             key={`${id}post Viewer`}

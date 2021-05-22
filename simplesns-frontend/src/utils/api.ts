@@ -18,3 +18,16 @@ export const DeleteCommentData = async (commentId: string) => {
   const response = await axios.delete(url, config);
   return response;
 };
+
+export const PutCommentData = async (
+  commentId: string,
+  changedComment: string
+) => {
+  const url = `${BASE_URL}/comment/update/${commentId}`;
+  const body = {
+    comment: changedComment,
+  };
+  const response = await axios.put(url, body, config);
+
+  return response;
+};

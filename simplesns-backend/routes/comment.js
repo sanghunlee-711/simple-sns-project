@@ -50,6 +50,51 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+router.put("/update/:id", async (req, res, next) => {
+  try {
+    const verifying = jwt.verify(
+      req.headers.authorization,
+      process.env.JWT_SECRET
+    );
+
+    const user = await User.findOne({
+      attributes: ["id"],
+      where: { email: verifying.email },
+    });
+
+    const _id = await user.getDataValue("id");
+
+    // const updateComment = await Comment.update({
+    //   id: req.params.id,
+    //   comment: req.body.comment,
+    //   UserId: _id,
+    // });
+    const updateComment = await Comment.update(
+      { comment: req.body.comment },
+      {
+        where: { id: req.params.id, UserId: _id },
+      }
+    );
+
+    console.log(updateComment);
+
+    if (updateComment) {
+      return res.status(200).json({
+        code: 200,
+        message: "댓글수정이 완료되었습니다.",
+      });
+    } else {
+      return res.status(400).json({
+        code: 400,
+        message: "댓글 수정이 실패했습니다.",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.delete("/delete/:id", async (req, res, next) => {
   try {
     const verifying = jwt.verify(

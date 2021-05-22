@@ -1,5 +1,9 @@
 import { all, call, fork, put, take } from "redux-saga/effects";
-import { DeleteCommentData, PostCommentData } from "../../utils/api";
+import {
+  DeleteCommentData,
+  PostCommentData,
+  PutCommentData,
+} from "../../utils/api";
 import { actions, types } from "../reducer/commentReducer";
 
 export function* tryPostComment() {
@@ -37,7 +41,27 @@ export function* tryDeleteComment() {
   }
 }
 
+export function* tryPutComment() {
+  while (true) {
+    const { payload } = yield take(types.PUT_COMMENT);
+    yield put(actions.setCommentLoading(true));
+
+    try {
+      yield call(PutCommentData, payload.id, payload.updateComment);
+    } catch (error) {
+      console.error(error);
+      alert(`${error.message}에러 발생`);
+    }
+    window.location.reload();
+    yield put(actions.setCommentLoading(false));
+  }
+}
+
 export function* commentSaga() {
   console.log("In Nav-Saga");
-  yield all([fork(tryPostComment), fork(tryDeleteComment)]);
+  yield all([
+    fork(tryPostComment),
+    fork(tryDeleteComment),
+    fork(tryPutComment),
+  ]);
 }

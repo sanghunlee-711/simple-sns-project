@@ -6,3 +6,8 @@ export const config = {
     key: CLIENT_SECRET,
   },
 };
+
+export const config_json_type = {
+  ...config,
+  "Content-Type": "application/json",
+};
