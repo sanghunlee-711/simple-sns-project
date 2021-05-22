@@ -1,13 +1,12 @@
 import "@toast-ui/editor/dist/toastui-editor.css"; // Editor's Style
-import axios from "axios";
 import "codemirror/lib/codemirror.css";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { BASE_URL } from "../../../config/config.json";
 import { CommentsData } from "../../../model/ArticleModel";
 import { actions } from "../../../redux/reducer/commentReducer";
-import { config } from "../../../utils/util";
+import { actions as postActions } from "../../../redux/reducer/postReducer";
+import { RootState } from "../../../redux/store";
 
 interface ICommentData {
   comments: CommentsData[];
@@ -18,39 +17,17 @@ export default function TuiViewerComment({ comments }: ICommentData) {
   const [changedComment, setChangedComment] = useState<string>("");
   const [changeToggle, setChangeToggle] = useState<boolean>(false);
   const [toggleId, setToggleId] = useState<number>(0);
-  const [tokenCheck, setTokenCheck] = useState<boolean>(false);
-  const [tokenNick, setTokenNick] = useState<string>("");
-  const [tokenId, setTokenId] = useState<number>(0);
-
+  const tokenCheckData = useSelector((state: RootState) => state.postReducer);
+  const { userId, userNick, tokenCheck } = tokenCheckData;
   useEffect(() => {
-    checkTokenForBtn();
+    dispatch(postActions.checkTokenData());
   }, []);
-
-  const checkTokenForBtn = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}/auth/token`, config);
-      if (
-        response.status === 200 &&
-        sessionStorage.getItem("token") &&
-        sessionStorage.getItem("nick") === response.data._nick
-      ) {
-        setTokenNick(response.data._nick);
-        setTokenId(response.data._id);
-        setTokenCheck(true);
-      } else {
-        setTokenCheck(false);
-      }
-    } catch (error) {
-      setTokenCheck(false);
-      console.error(error);
-    }
-  };
 
   return (
     <>
       {comments.map(({ comment, User, id }) => (
         <>
-          {User.id === tokenId && changeToggle && id === toggleId ? (
+          {User.id === userId && changeToggle && id === toggleId ? (
             <ChangeCommentContainer>
               <CommentsWrapper>
                 <span>{User.nick}</span>
@@ -87,7 +64,7 @@ export default function TuiViewerComment({ comments }: ICommentData) {
                 <span>{comment}</span>
               </CommentsWrapper>
               <CommentsButtonWrapper>
-                {User.nick === tokenNick && User.id === tokenId && tokenCheck && (
+                {User.nick === userNick && User.id === userId && tokenCheck && (
                   <>
                     <button
                       onClick={() => {

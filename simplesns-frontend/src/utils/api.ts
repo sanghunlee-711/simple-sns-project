@@ -31,3 +31,9 @@ export const PutCommentData = async (
 
   return response;
 };
+
+export const CheckToken = async () => {
+  const response = await axios.get(`${BASE_URL}/auth/token`, config);
+
+  return response;
+};

@@ -2,8 +2,12 @@ interface CommentState {
   id: number;
   comment: string;
   updateComment: string;
-  loading: boolean;
 }
+// 유니온 타입으로 계속 추가하자
+type CommentAction =
+  | ReturnType<typeof postCommentData>
+  | ReturnType<typeof deleteCommentData>
+  | ReturnType<typeof putCommentData>;
 
 //Action Type
 export const types = {
@@ -27,31 +31,17 @@ export const putCommentData = (id: number, updateComment: string) => ({
   payload: { id, updateComment },
 });
 
-export const setCommentLoading = (loadingState: boolean) => ({
-  type: types.SET_COMMENT_LOADING,
-  payload: loadingState,
-});
-
 //action
 export const actions = {
   postCommentData,
-  setCommentLoading,
   deleteCommentData,
   putCommentData,
 };
-
-// 유니온 타입으로 계속 추가하자
-type CommentAction =
-  | ReturnType<typeof postCommentData>
-  | ReturnType<typeof setCommentLoading>
-  | ReturnType<typeof deleteCommentData>
-  | ReturnType<typeof putCommentData>;
 
 //InitialState
 export const INITIAL_STATE: CommentState = {
   id: 0,
   comment: "",
-  loading: false,
   updateComment: "",
 };
 
@@ -69,9 +59,6 @@ export const navReducer = (
       };
     case "comment/DELETE_COMMENT":
       return { ...state, id: action.payload };
-
-    case "comment/SET_COMMENT_LOADING":
-      return { ...state, loading: action.payload };
 
     case "comment/PUT_COMMENT":
       return {

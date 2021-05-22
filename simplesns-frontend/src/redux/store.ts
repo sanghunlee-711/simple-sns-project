@@ -1,9 +1,16 @@
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import createSagaMiddleware from "redux-saga";
+import commentReducer from "./reducer/commentReducer";
+import loadingReducer from "./reducer/loadingReducer";
 import navReducer from "./reducer/navReducer";
-import { commentSaga } from "./saga/commentSaga";
+import postReducer from "./reducer/postReducer";
+import { rootSaga } from "./saga/rootSaga";
+
 const rootReducer = combineReducers({
   navReducer,
+  commentReducer,
+  postReducer,
+  loadingReducer,
 });
 
 //make saga
@@ -15,4 +22,4 @@ export default store;
 
 export type RootState = ReturnType<typeof rootReducer>;
 
-sagaMiddleWare.run(commentSaga);
+sagaMiddleWare.run(rootSaga);
