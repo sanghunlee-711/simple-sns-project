@@ -65,7 +65,7 @@ export default function TuiViewer({
       <ViewerHeader>
         <Title>{title}</Title>
         <HeaderButtonWrapper>
-          {userNick === "" && tokenCheck ? (
+          {userNick === User.nick && tokenCheck && userId === User.id ? (
             <>
               <EditButton>
                 <i className="fas fa-edit fa-2x"></i>
@@ -87,7 +87,7 @@ export default function TuiViewer({
         <ViewerMainImage src={titleImgUrl} alt="represent image" />
       </ViewerMainImageWrapper>
       <ViewerBottom>
-        <Id>{nick}</Id>
+        <Id>{User.nick}</Id>
         <InputWrapper>
           <input
             type="text"
