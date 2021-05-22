@@ -1,6 +1,6 @@
 import axios from "axios";
-import { BASE_URL } from "../config/config.json";
-import { config } from "../utils/util";
+import { BASE_URL } from "../../config/config.json";
+import { config } from "../util";
 
 export const PostCommentData = async (postId: string, inputComment: string) => {
   const body = {

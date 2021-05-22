@@ -3,7 +3,7 @@ import {
   DeleteCommentData,
   PostCommentData,
   PutCommentData,
-} from "../../utils/api";
+} from "../../utils/api/commentApi";
 import { types } from "../reducer/commentReducer";
 import { actions as loadingActions } from "../reducer/loadingReducer";
 

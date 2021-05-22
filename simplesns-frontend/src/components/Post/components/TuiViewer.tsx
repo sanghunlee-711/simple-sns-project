@@ -60,6 +60,10 @@ export default function TuiViewer({
     }
   };
 
+  const modifyPost = (postId: number) => {
+    console.log(postId);
+  };
+
   return (
     <ViewerContainer>
       <ViewerHeader>
@@ -67,7 +71,7 @@ export default function TuiViewer({
         <HeaderButtonWrapper>
           {userNick === User.nick && tokenCheck && userId === User.id ? (
             <>
-              <EditButton>
+              <EditButton onClick={() => modifyPost(id)}>
                 <i className="fas fa-edit fa-2x"></i>
               </EditButton>
               <QuitButton onClick={() => deletePost()}>

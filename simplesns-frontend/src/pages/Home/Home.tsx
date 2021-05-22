@@ -11,6 +11,7 @@ export default function Home() {
   useEffect(() => {
     getData();
   }, []);
+
   const getData = async () => {
     try {
       const response = await axios.get(BASE_URL, {
