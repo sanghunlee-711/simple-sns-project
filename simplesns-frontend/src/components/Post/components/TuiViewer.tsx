@@ -2,12 +2,13 @@ import "@toast-ui/editor/dist/toastui-editor.css"; // Editor's Style
 import axios from "axios";
 import "codemirror/lib/codemirror.css";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { BASE_URL } from "../../../config/config.json";
-import { CommentsData } from "../../../model/ArticleModel";
+import { CommentsData, UserData } from "../../../model/ArticleModel";
 import { actions } from "../../../redux/reducer/commentReducer";
+import { RootState } from "../../../redux/store";
 import { config } from "../../../utils/util";
 import TuiViewerComment from "./TuiViewerComment";
 
@@ -18,10 +19,12 @@ interface ITuiViewer {
   titleImgUrl: string;
   comments: CommentsData[];
   nick: string;
+  User: UserData;
 }
 
 export default function TuiViewer({
   content,
+  User,
   title,
   titleImgUrl,
   id,
@@ -31,6 +34,8 @@ export default function TuiViewer({
   const history = useHistory();
   const dispatch = useDispatch();
   const [inputComment, setInputComment] = useState<string>("");
+  const tokenCheckData = useSelector((state: RootState) => state.postReducer);
+  const { userId, userNick, tokenCheck } = tokenCheckData;
 
   const deletePost = async () => {
     const _postId = id;
@@ -60,12 +65,18 @@ export default function TuiViewer({
       <ViewerHeader>
         <Title>{title}</Title>
         <HeaderButtonWrapper>
-          <EditButton>
-            <i className="fas fa-edit fa-2x"></i>
-          </EditButton>
-          <QuitButton onClick={() => deletePost()}>
-            <i className="fas fa-times fa-2x"></i>
-          </QuitButton>
+          {userNick === "" && tokenCheck ? (
+            <>
+              <EditButton>
+                <i className="fas fa-edit fa-2x"></i>
+              </EditButton>
+              <QuitButton onClick={() => deletePost()}>
+                <i className="fas fa-times fa-2x"></i>
+              </QuitButton>
+            </>
+          ) : (
+            <></>
+          )}
         </HeaderButtonWrapper>
       </ViewerHeader>
       <ViewerMainImageWrapper

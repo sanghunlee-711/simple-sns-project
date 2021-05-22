@@ -20,5 +20,6 @@ export interface ContentsData {
   content: string;
   createdAt: string;
   updatedAt: string;
+  User: UserData;
   Comments: CommentsData[];
 }
