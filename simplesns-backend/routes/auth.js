@@ -91,4 +91,34 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
+router.get("/token", async (req, res, next) => {
+  try {
+    const verifying = jwt.verify(
+      req.headers.authorization,
+      process.env.JWT_SECRET
+    );
+
+    const user = await User.findOne({
+      attributes: ["id", "email", "nick"],
+      where: { email: verifying.email },
+    });
+    const _nick = await user.getDataValue("nick");
+    const _email = await user.getDataValue("email");
+    const _id = await user.getDataValue("id");
+    const data = { _email, _id, _nick };
+
+    if (_email && _id) {
+      return res.json(data);
+    } else {
+      return res.status(404).json({
+        code: 404,
+        message: "찾을 수 없는 회원입니다.",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 module.exports = router;
