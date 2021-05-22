@@ -5,13 +5,15 @@ import { config } from "../util";
 export const PutPostData = async (
   postId: string,
   changedContent: string,
-  titleImgUrl: string
+  titleImgUrl: string,
+  title: string
 ) => {
   const url = `${BASE_URL}/post/update`;
   const body = {
     postId,
     content: changedContent,
     titleImgUrl,
+    title,
   };
   const response = await axios.put(url, body, config);
 

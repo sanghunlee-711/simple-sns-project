@@ -24,9 +24,9 @@ export function* tryModifyPost() {
   while (true) {
     const { payload } = yield take(types.PUT_CONTENT_DATA);
     yield put(loadingActions.setLoading(true));
-    const { postId, changedContent, titleImgUrl } = payload;
+    const { postId, changedContent, titleImgUrl, title } = payload;
     try {
-      yield call(PutPostData, postId, changedContent, titleImgUrl);
+      yield call(PutPostData, postId, changedContent, titleImgUrl, title);
     } catch (error) {
       console.error(error);
     }

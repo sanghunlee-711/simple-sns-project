@@ -8,6 +8,7 @@ import styled from "styled-components";
 import { BASE_URL } from "../../../config/config.json";
 import { CommentsData, UserData } from "../../../model/ArticleModel";
 import { actions } from "../../../redux/reducer/commentReducer";
+import { actions as postActions } from "../../../redux/reducer/postReducer";
 import { RootState } from "../../../redux/store";
 import { config } from "../../../utils/util";
 import TuiViewerComment from "./TuiViewerComment";
@@ -60,10 +61,6 @@ export default function TuiViewer({
     }
   };
 
-  const modifyPost = (postId: number) => {
-    console.log(postId);
-  };
-
   return (
     <ViewerContainer>
       <ViewerHeader>
@@ -71,7 +68,12 @@ export default function TuiViewer({
         <HeaderButtonWrapper>
           {userNick === User.nick && tokenCheck && userId === User.id ? (
             <>
-              <EditButton onClick={() => modifyPost(id)}>
+              <EditButton
+                onClick={() => {
+                  dispatch(postActions.getPostId(id));
+                  history.push("/modify");
+                }}
+              >
                 <i className="fas fa-edit fa-2x"></i>
               </EditButton>
               <QuitButton onClick={() => deletePost()}>
