@@ -11,12 +11,12 @@ const { verify } = require("crypto");
 
 const router = express.Router();
 
-try {
-  fs.readdirSync("uploads");
-} catch (error) {
-  console.error("uploads 폴더가 없어 uploads폴더를 생성합니다.");
-  fs.mkdirSync("uploads");
-}
+// try {
+//   fs.readdirSync("uploads");
+// } catch (error) {
+//   console.error("uploads 폴더가 없어 uploads폴더를 생성합니다.");
+//   fs.mkdirSync("uploads");
+// }
 
 AWS.config.update({
   accessKeyId: process.env.S3_ACCESS_KEY_ID,
@@ -44,7 +44,6 @@ router.get("/:id", async (req, res, next) => {
       },
     });
 
-    console.log(post);
     if (!post) {
       return res.status(404).json({
         code: 404,
@@ -70,14 +69,12 @@ router.post("/", upload2.none(), async (req, res, next) => {
       req.headers.authorization,
       process.env.JWT_SECRET
     );
-    console.log("@@@@@@@@@@@verifying", verifying);
     const user = await User.findOne({
       attributes: ["id"],
       where: { email: verifying.email },
     });
     const _id = await user.getDataValue("id");
-    console.log("@@@@@@@@ IN POST", user);
-    console.log("!!!!!!!_______>>>>>>.", _id);
+
     const post = await Post.create({
       //id는 user테이블의 fmk를 넣어야 함.
       UserId: _id,
@@ -161,6 +158,44 @@ router.delete("/delete/:id", async (req, res, next) => {
   } catch (error) {
     console.error(error);
     next(error);
+  }
+});
+
+router.put("/update", async (req, res, next) => {
+  try {
+    const verifying = jwt.verify(
+      req.header.authorization,
+      process.env.JWT_SECRET
+    );
+
+    const user = await User.findOne({
+      attributes: ["id"],
+      where: { email: verifying.email },
+    });
+
+    const _id = await user.getDataValue("id");
+
+    const updatePost = await Post.update(
+      {
+        content: req.body.content,
+        titleImgUrl: req.body.titleImgUrl,
+      },
+      { where: { id: req.body.postId, UserId: _id } }
+    );
+
+    if (updatePost) {
+      return res.status(200).json({
+        code: 200,
+        message: "게시글수정이 완료되었습니다.",
+      });
+    } else {
+      return res.status(400).json({
+        code: 400,
+        message: "게시글 수정에 실패했습니다.",
+      });
+    }
+  } catch (error) {
+    console.error(error);
   }
 });
 
