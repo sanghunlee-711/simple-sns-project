@@ -164,7 +164,7 @@ router.delete("/delete/:id", async (req, res, next) => {
 router.put("/update", async (req, res, next) => {
   try {
     const verifying = jwt.verify(
-      req.header.authorization,
+      req.headers.authorization,
       process.env.JWT_SECRET
     );
 
@@ -179,9 +179,11 @@ router.put("/update", async (req, res, next) => {
       {
         content: req.body.content,
         titleImgUrl: req.body.titleImgUrl,
+        title: req.body.title,
       },
       { where: { id: req.body.postId, UserId: _id } }
     );
+    console.log(updatePost);
 
     if (updatePost) {
       return res.status(200).json({
