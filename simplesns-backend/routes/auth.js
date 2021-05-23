@@ -1,9 +1,8 @@
 const express = require("express");
-const passport = require("passport");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
-const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
+const { verifyToken } = require("./middlewares");
 const User = require("../models/user");
 const router = express.Router();
 
@@ -13,7 +12,7 @@ router.use(async (req, res, next) => {
   })(req, res, next);
 });
 
-router.post("/join", isNotLoggedIn, async (req, res, next) => {
+router.post("/join", async (req, res, next) => {
   //front - body -> {email: "...", nick: "...", password: "..."}
   const { email, nick, password } = req.body;
 
@@ -38,7 +37,7 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
   }
 });
 
-router.get("/logout", isLoggedIn, (req, res, next) => {
+router.get("/logout", verifyToken, (req, res, next) => {
   req.session.destroy();
   req.logout();
   return res.status(200).json({
@@ -68,10 +67,11 @@ router.post("/login", async (req, res, next) => {
         },
         process.env.JWT_SECRET,
         {
-          expiresIn: "365d", //1년...?
+          expiresIn: "2d", //1년...?
           issuer: "SimpleSns",
         }
       );
+
       return res.json({
         code: 200,
         message: "토큰이 발급 되었습니다.",
@@ -91,24 +91,16 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.get("/token", async (req, res, next) => {
+router.get("/token", verifyToken, async (req, res, next) => {
   try {
-    const verifying = jwt.verify(
-      req.headers.authorization,
-      process.env.JWT_SECRET
-    );
-
     const user = await User.findOne({
       attributes: ["id", "email", "nick"],
-      where: { email: verifying.email },
+      where: { email: req.decoded.email },
     });
-    const _nick = await user.getDataValue("nick");
-    const _email = await user.getDataValue("email");
-    const _id = await user.getDataValue("id");
-    const data = { _email, _id, _nick };
 
-    if (_email && _id) {
-      return res.json(data);
+    if (user) {
+      //여기 걍 유저정보 줘도 될것같은데
+      return res.json(user);
     } else {
       return res.status(404).json({
         code: 404,

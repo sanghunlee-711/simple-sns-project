@@ -55,6 +55,7 @@ export default function TuiViewer({
         history.push("/");
         return window.location.reload();
       }
+      window.location.reload();
     } catch (error) {
       console.error(error);
       alert("Error:!");

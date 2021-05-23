@@ -20,7 +20,9 @@ export default function TuiViewerComment({ comments }: ICommentData) {
   const tokenCheckData = useSelector((state: RootState) => state.postReducer);
   const { userId, userNick, tokenCheck } = tokenCheckData;
   useEffect(() => {
-    dispatch(postActions.checkTokenData());
+    if (sessionStorage.getItem("token")) {
+      dispatch(postActions.checkTokenData());
+    }
   }, []);
 
   return (

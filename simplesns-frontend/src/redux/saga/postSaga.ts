@@ -12,7 +12,7 @@ export function* checkToken() {
     try {
       const { data } = yield call(CheckToken);
 
-      yield put(actions.getTokenData(data._id, data._nick, true));
+      yield put(actions.getTokenData(data.id, data.nick, true));
     } catch (error) {
       console.error(error);
     }
