@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const { User, Post, Image } = require("../models");
+const AWS = require("aws-sdk");
 
 // exports.isLoggedIn = (req, res, next) => {
 //   if (req.isAuthenticated()) {
@@ -58,6 +59,69 @@ exports.getUserId = async (req, res, next) => {
     return next();
   } catch (error) {
     console.log(error);
+    next(error);
+  }
+};
+
+exports.checkS3 = async (req, res, next) => {
+  try {
+    const invalidImg = await Image.findAll({
+      where: { PostId: null },
+      attributes: ["s3url"],
+    });
+
+    if (!invalidImg) {
+      next();
+    }
+
+    const srcArr = await Promise.all(
+      invalidImg.map((data) => data.getDataValue("s3url"))
+    );
+    const dataIdArr = srcArr.map((el) => {
+      let idx = el.indexOf("original/");
+      console.log(idx);
+      return el.slice(idx, el.length - 1);
+    });
+    const deleteObjArr = dataIdArr.map((el) => {
+      return { Key: el };
+    });
+    console.log(deleteObjArr);
+
+    const s3 = new AWS.S3();
+    const deleteParam = {
+      Bucket: "cloudleesimplesns",
+      Delete: {
+        Objects: [...deleteObjArr],
+      },
+    };
+    if (dataIdArr.length >= 1) {
+      s3.deleteObjects(deleteParam, function (err, data) {
+        if (err) console.log(err, err.stack);
+        else console.log("delete!!! IN S3!!!", data);
+      });
+    }
+
+    next();
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+exports.deleteInvalidImg = async (req, res, next) => {
+  try {
+    const invalidImg = await Image.destroy({
+      where: { PostId: null },
+    });
+    if (!invalidImg) {
+      next();
+    }
+
+    if (invalidImg) {
+      console.log(invalidImg, "deleted img In DB");
+    }
+  } catch (error) {
+    console.error(error);
     next(error);
   }
 };

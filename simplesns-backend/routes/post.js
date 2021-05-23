@@ -5,7 +5,7 @@ const fs = require("fs");
 const AWS = require("aws-sdk");
 const multerS3 = require("multer-s3");
 const path = require("path");
-const { verifyToken, getUserId } = require("./middlewares");
+const { verifyToken, getUserId, checkS3 } = require("./middlewares");
 
 const router = express.Router();
 
@@ -24,18 +24,6 @@ const upload = multer({
     },
   }),
 });
-
-const deletePicURL = [];
-
-const s3 = new AWS.S3();
-const params = {
-  Bucket: "cloudleesimplesns",
-  Delete: {
-    Object: [],
-  },
-};
-
-s3.deleteObjects();
 
 router.get("/:id", async (req, res, next) => {
   try {
