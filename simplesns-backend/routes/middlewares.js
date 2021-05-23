@@ -120,6 +120,7 @@ exports.deleteInvalidImg = async (req, res, next) => {
     if (invalidImg) {
       console.log(invalidImg, "deleted img In DB");
     }
+    next();
   } catch (error) {
     console.error(error);
     next(error);

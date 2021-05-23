@@ -5,7 +5,12 @@ const fs = require("fs");
 const AWS = require("aws-sdk");
 const multerS3 = require("multer-s3");
 const path = require("path");
-const { verifyToken, getUserId, checkS3 } = require("./middlewares");
+const {
+  verifyToken,
+  getUserId,
+  checkS3,
+  deleteInvalidImg,
+} = require("./middlewares");
 
 const router = express.Router();
 
