@@ -1,34 +1,26 @@
 const express = require("express");
 const { Post, Hashtag, User, Comment } = require("../models");
 const jwt = require("jsonwebtoken");
+const { verifyToken, getUserId } = require("./middlewares");
 const router = express.Router();
 
-router.post("/", async (req, res, next) => {
+router.post("/", verifyToken, getUserId, async (req, res, next) => {
   try {
-    const verifying = jwt.verify(
-      req.headers.authorization,
-      process.env.JWT_SECRET
-    );
-
-    const user = await User.findOne({
-      attributes: ["id"],
-      where: { email: verifying.email },
-    });
     const post = await Post.findOne({
       where: { id: req.body.postId },
     });
 
-    const _userId = await user.getDataValue("id");
     const _postId = await post.getDataValue("id");
 
-    if (!user) {
+    if (!post) {
       return res.status(404).json({
         code: 404,
-        message: "회원정보가 없습니다.",
+        message: "게시글을 찾을 수 없습니다.",
       });
     }
+
     const comment = await Comment.create({
-      UserId: _userId,
+      UserId: req._userId,
       PostId: _postId,
       comment: req.body.comment,
     });
@@ -50,33 +42,14 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.put("/update/:id", async (req, res, next) => {
+router.put("/update/:id", verifyToken, getUserId, async (req, res, next) => {
   try {
-    const verifying = jwt.verify(
-      req.headers.authorization,
-      process.env.JWT_SECRET
-    );
-
-    const user = await User.findOne({
-      attributes: ["id"],
-      where: { email: verifying.email },
-    });
-
-    const _id = await user.getDataValue("id");
-
-    // const updateComment = await Comment.update({
-    //   id: req.params.id,
-    //   comment: req.body.comment,
-    //   UserId: _id,
-    // });
     const updateComment = await Comment.update(
       { comment: req.body.comment },
       {
-        where: { id: req.params.id, UserId: _id },
+        where: { id: req.params.id, UserId: req._userId },
       }
     );
-
-    console.log(updateComment);
 
     if (updateComment) {
       return res.status(200).json({
@@ -95,24 +68,12 @@ router.put("/update/:id", async (req, res, next) => {
   }
 });
 
-router.delete("/delete/:id", async (req, res, next) => {
+router.delete("/delete/:id", verifyToken, getUserId, async (req, res, next) => {
   try {
-    const verifying = jwt.verify(
-      req.headers.authorization,
-      process.env.JWT_SECRET
-    );
-
-    const user = await User.findOne({
-      attributes: ["id"],
-      where: { email: verifying.email },
-    });
-
-    const _id = await user.getDataValue("id");
-
     const deleteComment = await Comment.destroy({
       where: {
         id: req.params.id,
-        UserId: _id,
+        UserId: req._userId,
       },
     });
 
