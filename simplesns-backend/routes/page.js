@@ -4,7 +4,7 @@ const { Post, User, Hashtag, Comment } = require("../models");
 const { checkS3, deleteInvalidImg } = require("./middlewares");
 const router = express.Router();
 
-router.get("/", checkS3, deleteInvalidImg, async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   //https://stackoverflow.com/questions/25880539/join-across-multiple-junction-tables-with-sequelize
   try {
     const posts = await Post.findAll({
