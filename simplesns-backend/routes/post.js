@@ -1,6 +1,6 @@
 const express = require("express");
 const multer = require("multer");
-const { Post, Hashtag, User } = require("../models");
+const { Post, Hashtag, User, Image } = require("../models");
 const fs = require("fs");
 const AWS = require("aws-sdk");
 const multerS3 = require("multer-s3");
@@ -24,6 +24,18 @@ const upload = multer({
     },
   }),
 });
+
+const deletePicURL = [];
+
+const s3 = new AWS.S3();
+const params = {
+  Bucket: "cloudleesimplesns",
+  Delete: {
+    Object: [],
+  },
+};
+
+s3.deleteObjects();
 
 router.get("/:id", async (req, res, next) => {
   try {
@@ -68,6 +80,33 @@ router.post(
         content: req.body.content,
         titleImgUrl: req.body.titleImgUrl,
       });
+
+      const images = req.body.content.match(
+        /<img[^>]*src=[\"']?([^>\"']+)[\"']?[^>]*>/g
+      );
+      const images_s3_url = images.map((el) => {
+        if (el.includes("cloudleesimplesns.s3")) {
+          return el.match(/src\s*=\s*"(.+?)"/g);
+        }
+      });
+
+      const _postId = await post.getDataValue("id");
+
+      if (images) {
+        const result = await Promise.all(
+          images_s3_url.map((s3Url) => {
+            if (s3Url) {
+              return Image.findOrCreate({
+                where: {
+                  s3url: String(s3Url),
+                  PostId: _postId,
+                },
+              });
+            }
+          })
+        );
+        console.log("@@@@@@@", result);
+      }
 
       //해시태그를 정규표현식으로 추출해내기
       const hashtags = req.body.content.match(/#[^\s#]+/g);

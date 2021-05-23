@@ -15,12 +15,13 @@
 
 - React
 - Typescript
-- Redux-Toolkit
+- Redux
 - Redux-Saga
 
 ### Back-End
 
 - Node.js
+- javacript
 - Express
 - Sequelize
 
@@ -37,6 +38,6 @@
 
 ### ERD(Entity Relationship Diagram)
 
-<img src ="./static/erd.png" alt ="Entity Relationship Diagram">
+<img src ="./static/erd-v2.png" alt ="Entity Relationship Diagram">
 
 <hr>
