@@ -98,6 +98,9 @@ export default function TuiEditor(): JSX.Element {
           //blob을 s3로 넘겨서 저장하고 그 경로를 다시 받아서 콜백에 넣어주는 방식으로 구성하면 될듯
           const imgUrl = await saveImageToS3(blob);
           if (titleImgUrl.length <= 1) {
+            alert(
+              "최초의 사진이 타이틀 사진으로 저장 되며, 별도 지정 시 타이틀 사진이 변경 됩니다."
+            );
             setTitleImgUrl(imgUrl);
           }
 

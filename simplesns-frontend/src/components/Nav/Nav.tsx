@@ -4,6 +4,7 @@ import { useHistory } from "react-router";
 import styled from "styled-components";
 import PostPortal from "../../components/Post/components/PostPortal";
 import { toggleBurger, togglePost } from "../../redux/reducer/navReducer";
+import { doSearch, getSearchData } from "../../redux/reducer/searchReducer";
 import { RootState } from "../../redux/store";
 import TuiPost from "../Post/TuiPost";
 import BurgerNav from "./components/BurgerNav";
@@ -15,6 +16,9 @@ export default function Nav(): JSX.Element {
   const burgerToggle = useSelector(
     (state: RootState) => state.navReducer.burgerToggle
   );
+  const searchWord = useSelector(
+    (state: RootState) => state.searchReducer.searchInput
+  );
   const dispatch = useDispatch();
 
   return (
@@ -23,6 +27,21 @@ export default function Nav(): JSX.Element {
         <NavWrapper>
           <Logo onClick={() => history.push("/")}>Simple SNS</Logo>
           <NavButtonWrapper>
+            <SearchWrapper>
+              <input
+                value={searchWord}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  dispatch(getSearchData(e.target.value as string))
+                }
+              />
+              <button
+                onClick={() => {
+                  dispatch(doSearch(searchWord));
+                }}
+              >
+                Search!
+              </button>
+            </SearchWrapper>
             <PostButton
               onClick={() => {
                 dispatch(togglePost(!postToggle));
@@ -59,6 +78,8 @@ const NavButtonWrapper = styled.div`
     margin-right: 3vw;
   }
 `;
+
+const SearchWrapper = styled.div``;
 
 const BurgerButtonWrapper = styled.div``;
 

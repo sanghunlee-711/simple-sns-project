@@ -111,57 +111,86 @@ export default function Modify() {
     });
   }, [modifyArticleData]);
 
+  const handleTitleImage = (e: React.PointerEvent<HTMLImageElement>) => {
+    const _eventTarget = e.target as HTMLImageElement;
+    if (_eventTarget && _eventTarget.src) {
+      const _NodeListOfTitleImage = document.querySelectorAll(
+        ".postTitleImage"
+      );
+
+      for (let i = 0; i < _NodeListOfTitleImage.length; i++) {
+        _NodeListOfTitleImage[i].classList.remove("postTitleImage");
+      }
+
+      _eventTarget.className += "postTitleImage";
+
+      setTitleImgUrl(_eventTarget.src);
+      alert("타이틀 이미지가 변경되었습니다.");
+    }
+  };
+
   const { title, content } = modifyArticleData;
   const { email, nick } = userData;
 
   return (
-    <ModifyContainer>
-      <HeaderWrapper>
-        <Title>
-          <input
-            autoFocus
-            value={modifyTitle}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setModifyTitle(e.target.value)
-            }
-          />
-        </Title>
-        <UserInfoWrapper>
-          <p>
-            Email Is <span>{email}</span>
-          </p>
-          <p>
-            Written By<span>{nick}</span>
-          </p>
-        </UserInfoWrapper>
-      </HeaderWrapper>
-      수정..{_postId}
-      <EdtiorContainer id="toastEditor">
-        <div id="editSection"></div>
-      </EdtiorContainer>
-      <BottomContainer>
-        <ButtonWrapper>
-          <SaveButton
-            onClick={() => {
-              dispatch(
-                actions.modifyContent(
-                  _postId,
-                  toastEditor.getHtml(),
-                  titleImgUrl,
-                  modifyTitle
-                )
-              );
-            }}
-            className="btn_save"
-          >
-            MODIFY
-          </SaveButton>
-          <CancelButton onClick={() => history.push("/")} className="btn_save">
-            CANCEL
-          </CancelButton>
-        </ButtonWrapper>
-      </BottomContainer>
-    </ModifyContainer>
+    <>
+      <ModifyContainer>
+        <HeaderWrapper>
+          <Title>
+            <input
+              autoFocus
+              value={modifyTitle}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setModifyTitle(e.target.value)
+              }
+            />
+          </Title>
+          <UserInfoWrapper>
+            <p>
+              Email Is <span>{email}</span>
+            </p>
+            <p>
+              Written By<span>{nick}</span>
+            </p>
+          </UserInfoWrapper>
+        </HeaderWrapper>
+        {/* <TitleImage /> */}
+        <EdtiorContainer
+          id="toastEditor"
+          onClick={(e: React.PointerEvent<HTMLImageElement>) =>
+            handleTitleImage(e)
+          }
+        >
+          <div id="editSection"></div>
+        </EdtiorContainer>
+        <BottomContainer>
+          <ButtonWrapper>
+            <SaveButton
+              onClick={() => {
+                dispatch(
+                  actions.modifyContent(
+                    _postId,
+                    toastEditor.getHtml(),
+                    titleImgUrl,
+                    modifyTitle
+                  )
+                );
+              }}
+              className="btn_save"
+            >
+              MODIFY
+            </SaveButton>
+            <CancelButton
+              onClick={() => history.push("/")}
+              className="btn_save"
+            >
+              CANCEL
+            </CancelButton>
+          </ButtonWrapper>
+        </BottomContainer>
+      </ModifyContainer>
+      <style>{titleStyle}</style>
+    </>
   );
 }
 
@@ -247,4 +276,8 @@ const UserInfoWrapper = styled.div`
       font-weight: normal;
     }
   }
+`;
+
+const titleStyle = `
+  border: 3px solid red;
 `;
