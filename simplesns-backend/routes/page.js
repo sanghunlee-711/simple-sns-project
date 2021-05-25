@@ -43,7 +43,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:search", verifyToken, async (req, res, next) => {
+router.get("/:search", async (req, res, next) => {
   try {
     const _searchWord = req.params.search;
     const posts = await Post.findAll({
