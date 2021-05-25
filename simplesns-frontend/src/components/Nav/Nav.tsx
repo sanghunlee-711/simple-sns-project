@@ -4,7 +4,7 @@ import { useHistory } from "react-router";
 import styled from "styled-components";
 import PostPortal from "../../components/Post/components/PostPortal";
 import { toggleBurger, togglePost } from "../../redux/reducer/navReducer";
-import { doSearch, getSearchData } from "../../redux/reducer/searchReducer";
+import { getSearchData } from "../../redux/reducer/searchReducer";
 import { RootState } from "../../redux/store";
 import TuiPost from "../Post/TuiPost";
 import BurgerNav from "./components/BurgerNav";
@@ -36,7 +36,7 @@ export default function Nav(): JSX.Element {
               />
               <button
                 onClick={() => {
-                  dispatch(doSearch(searchWord));
+                  history.push(`/search/${searchWord}`);
                 }}
               >
                 Search!

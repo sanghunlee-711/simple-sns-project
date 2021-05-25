@@ -1,7 +1,8 @@
 import { call, put, take } from "redux-saga/effects";
-import { getSerachData } from "../../utils/api/searchApi";
+import { ContentsData } from "../../model/ArticleModel";
+import { getSearchData as callSearchData } from "../../utils/api/searchApi";
 import { actions as loadingActions } from "../reducer/loadingReducer";
-import { types } from "../reducer/searchReducer";
+import { actions as searchActions, types } from "../reducer/searchReducer";
 
 export function* getSearchData() {
   while (true) {
@@ -9,8 +10,9 @@ export function* getSearchData() {
     yield put(loadingActions.setLoading(true));
 
     try {
-      const { data } = yield call(getSerachData, payload);
-      console.log(data);
+      const { data } = yield call(callSearchData, payload);
+      console.log("In SAGA", data);
+      yield put(searchActions.saveSearchData(data as ContentsData[]));
       // yield put(actions.getTokenData(data.id, data.nick, true));
     } catch (error) {
       console.error(error);

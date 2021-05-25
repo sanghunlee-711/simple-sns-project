@@ -46,29 +46,48 @@ router.get("/", async (req, res, next) => {
 router.get("/:search", async (req, res, next) => {
   try {
     const _searchWord = req.params.search;
-    const posts = await Post.findAll({
-      include: [
-        {
-          model: User,
-          attributes: ["id", "nick", "email"],
-        },
-        {
-          model: Hashtag,
-        },
-      ],
-      where: {
-        title: {
-          [Op.like]: `%${_searchWord}%`,
-        },
-      },
-    });
+    const posts = [];
     if (!posts) {
       return res.status(404).json({
         message: "해당하는 게시글이 존재하지 않습니다.",
         code: 404,
       });
     }
+
+    if (_searchWord.includes("#")) {
+      const hashtag = await Hashtag.findOne({ where: { title: _searchWord } });
+      posts = await hashtag.getPosts({ include: [{ model: User }] });
+    } else {
+      posts = await Post.findAll({
+        include: [
+          {
+            model: User,
+            attributes: ["id", "nick", "email"],
+          },
+          {
+            model: Hashtag,
+          },
+        ],
+        where: {
+          title: {
+            [Op.like]: `%${_searchWord}%`,
+          },
+        },
+      });
+    }
+
     return res.json(posts);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.get("/:hashtag", async (req, res, next) => {
+  try {
+    const _searchHashtag = await Post.findAll({
+      where: {},
+    });
   } catch (error) {
     console.error(error);
     next(error);
