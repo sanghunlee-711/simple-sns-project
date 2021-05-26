@@ -77,15 +77,24 @@ router.get("/:search", async (req, res, next) => {
   }
 });
 
-router.get("/:hashtag", async (req, res, next) => {
-  console.log("@@@@@@@@@@HASHTAG@!!!@@@");
-  const hashtag = await Hashtag.findOne({ where: { title: _searchWord } });
-  posts = await hashtag.getPosts({ include: [{ model: User }] });
-
+router.get("/hashtag/:hashtag", async (req, res, next) => {
+  const text = req.params.hashtag;
+  if (!text) {
+    return res.redirect("/");
+  }
   try {
-    const _searchHashtag = await Post.findAll({
-      where: {},
-    });
+    const hashtag = await Hashtag.findOne({ where: { title: text } });
+
+    if (!hashtag) {
+      return res.status(404).json({
+        code: 404,
+        message: "존재하지 않는 해시태그 입니다.",
+      });
+    }
+
+    const posts = await hashtag.getPosts({ include: [{ model: User }] });
+
+    return res.json(posts);
   } catch (error) {
     console.error(error);
     next(error);

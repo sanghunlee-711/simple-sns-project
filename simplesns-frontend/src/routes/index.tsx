@@ -8,6 +8,8 @@ import Join from "../pages/Join/Join";
 import Login from "../pages/Login/Login";
 import Modify from "../pages/Modify/Modify";
 import Search from "../pages/Search/Search";
+import Tags from "../pages/Tags/Tags";
+
 const RootRouter: React.FC = () => {
   return (
     <BrowserRouter>
@@ -19,6 +21,7 @@ const RootRouter: React.FC = () => {
         <Route exact path="/article/:id" component={Article} />
         <Route exact path="/modify" component={Modify} />
         <Route exact path="/search/:searchWord" component={Search} />
+        <Route exact path="/tag/:hashTag" component={Tags} />
       </Switch>
       <Footer />
     </BrowserRouter>

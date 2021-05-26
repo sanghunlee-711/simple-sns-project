@@ -6,23 +6,27 @@ interface PostState {
   changedContent: string;
   titleImgUrl: string;
   title: string;
+  hashtagText: string;
 }
 type PostAction =
   | ReturnType<typeof checkTokenData>
   | ReturnType<typeof getTokenData>
   | ReturnType<typeof modifyContent>
-  | ReturnType<typeof getPostId>;
+  | ReturnType<typeof getPostId>
+  | ReturnType<typeof getHashTagData>;
 
 export const types = {
   CHECK_TOKEN: "post/CHECK_TOKEN" as const,
   GET_TOKEN_DATA: "post/GET_TOKEN_DATA" as const,
   PUT_CONTENT_DATA: "post/PUT_CONTENT_DATA" as const,
   GET_POST_ID: "post/GET_POST_ID" as const,
+  GET_HASHTAG_DATA: "post/GET_HASHTAG_DATA" as const,
 };
 
 export const checkTokenData = () => ({
   type: types.CHECK_TOKEN,
 });
+
 export const getTokenData = (
   userId: number,
   userNick: string,
@@ -47,11 +51,17 @@ export const modifyContent = (
   payload: { postId, changedContent, titleImgUrl, title },
 });
 
+export const getHashTagData = (hashtagText: string) => ({
+  type: types.GET_HASHTAG_DATA,
+  payload: { hashtagText },
+});
+
 export const actions = {
   checkTokenData,
   getTokenData,
   getPostId,
   modifyContent,
+  getHashTagData,
 };
 
 export const INITIAL_STATE: PostState = {
@@ -62,6 +72,7 @@ export const INITIAL_STATE: PostState = {
   changedContent: "",
   titleImgUrl: "",
   title: "",
+  hashtagText: "",
 };
 
 export const postReducer = (
@@ -91,6 +102,10 @@ export const postReducer = (
         titleImgUrl,
         title,
       };
+
+    case "post/GET_HASHTAG_DATA":
+      const { hashtagText } = action.payload;
+      return { ...state, hashtagText };
 
     case "post/GET_POST_ID":
       return { ...state, postId: action.payload };

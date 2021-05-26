@@ -36,7 +36,16 @@ export default function Home() {
     <HomeContainer>
       <AritcleWrapper>
         {data.map(
-          ({ content, id, title, titleImgUrl, Comments, nick, User }) => (
+          ({
+            content,
+            id,
+            title,
+            titleImgUrl,
+            Comments,
+            nick,
+            User,
+            Hashtags,
+          }) => (
             <TuiViewer
               User={User}
               nick={nick}
@@ -46,6 +55,7 @@ export default function Home() {
               title={title}
               titleImgUrl={titleImgUrl}
               comments={Comments}
+              Hashtags={Hashtags}
             />
           )
         )}

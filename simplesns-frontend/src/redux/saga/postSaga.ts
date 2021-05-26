@@ -1,8 +1,9 @@
 import { call, put, take } from "redux-saga/effects";
 import { CheckToken } from "../../utils/api/commentApi";
-import { PutPostData } from "../../utils/api/postApi";
+import { GetHashTagData, PutPostData } from "../../utils/api/postApi";
 import { actions as loadingActions } from "../reducer/loadingReducer";
 import { actions, types } from "../reducer/postReducer";
+import { actions as searchActions } from "../reducer/searchReducer";
 
 export function* checkToken() {
   while (true) {
@@ -27,6 +28,22 @@ export function* tryModifyPost() {
     const { postId, changedContent, titleImgUrl, title } = payload;
     try {
       yield call(PutPostData, postId, changedContent, titleImgUrl, title);
+    } catch (error) {
+      console.error(error);
+    }
+    yield put(loadingActions.setLoading(false));
+  }
+}
+
+export function* getHashtagData() {
+  while (true) {
+    const { payload } = yield take(types.GET_HASHTAG_DATA);
+    yield put(loadingActions.setLoading(true));
+
+    try {
+      const { data } = yield call(GetHashTagData, payload.hashtagText);
+      console.log("yield", data);
+      yield put(searchActions.saveSearchData(data));
     } catch (error) {
       console.error(error);
     }
