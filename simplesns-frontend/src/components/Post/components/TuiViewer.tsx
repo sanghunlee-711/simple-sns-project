@@ -94,7 +94,7 @@ export default function TuiViewer({
         <ViewerMainImage src={titleImgUrl} alt="represent image" />
       </ViewerMainImageWrapper>
       <ViewerBottom>
-        <Id>{User.nick}</Id>
+        <Id>{User.nick}</Id> <HashTagContainer></HashTagContainer>
         <InputWrapper>
           <input
             type="text"
@@ -208,4 +208,8 @@ const EditButton = styled.button`
     color: gray;
     transition: all 0.3s ease-in-out;
   }
+`;
+
+const HashTagContainer = styled.div`
+  display: flex;
 `;

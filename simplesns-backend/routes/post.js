@@ -10,6 +10,7 @@ const {
   getUserId,
   checkS3,
   deleteInvalidImg,
+  checkHashTag,
 } = require("./middlewares");
 
 const router = express.Router();
@@ -63,6 +64,7 @@ router.post(
   "/",
   verifyToken,
   getUserId,
+  checkHashTag,
   upload2.none(),
   async (req, res, next) => {
     try {
@@ -101,21 +103,13 @@ router.post(
         console.log("@@@@@@@", result);
       }
 
-      //해시태그를 정규표현식으로 추출해내기
-      const hashtags = req.body.content.match(/#[^\s#]+/g);
-
-      if (hashtags) {
-        const result = await Promise.all(
-          hashtags.map((tag) => {
-            //Db에 존재하면 가져오고 존재하지 않으면 생성 후 가져오는 메서드(findOrCreate)
-            return Hashtag.findOrCreate({
-              where: { title: tag.slice(1).toLowerCase() },
-            });
-          })
-        );
+      //해시태그 존재 체크
+      if (req.hashtags) {
+        const result = req.hashtags;
 
         await post.addHashtags(result.map((r) => r[0]));
       }
+
       if (post) {
         res.status(200).json({
           code: 200,
@@ -160,7 +154,7 @@ router.delete("/delete/:id", verifyToken, async (req, res, next) => {
   }
 });
 
-router.put("/update", verifyToken, async (req, res, next) => {
+router.put("/update", verifyToken, checkHashTag, async (req, res, next) => {
   try {
     const updatePost = await Post.update(
       {
@@ -170,6 +164,16 @@ router.put("/update", verifyToken, async (req, res, next) => {
       },
       { where: { id: req.body.postId } }
     );
+
+    const post = await Post.findOne({
+      where: { id: req.body.postId },
+    });
+    //해시태그 존재 체크
+    if (req.hashtags) {
+      const result = req.hashtags;
+
+      await post.addHashtags(result.map((r) => r[0]));
+    }
 
     if (updatePost) {
       return res.status(200).json({

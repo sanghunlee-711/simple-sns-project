@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
-const { User, Post, Image } = require("../models");
+const { User, Post, Image, Hashtag } = require("../models");
 const AWS = require("aws-sdk");
+const { post } = require("./page");
 
 // exports.isLoggedIn = (req, res, next) => {
 //   if (req.isAuthenticated()) {
@@ -121,6 +122,32 @@ exports.deleteInvalidImg = async (req, res, next) => {
       console.log(invalidImg, "deleted img In DB");
     }
     next();
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+exports.checkHashTag = async (req, res, next) => {
+  try {
+    if (req.body.content) {
+      //해시태그 추출을 위한 정규표현식
+      const hashtags = req.body.content.match(/#[^\s#<>]+/g);
+
+      if (hashtags) {
+        const result = await Promise.all(
+          hashtags.map((tag) => {
+            return Hashtag.findOrCreate({
+              where: { title: tag.slice(1).toLowerCase() },
+            });
+          })
+        );
+        req.hashtags = result;
+        next();
+      }
+    } else {
+      next();
+    }
   } catch (error) {
     console.error(error);
     next(error);
