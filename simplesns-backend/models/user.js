@@ -49,7 +49,7 @@ module.exports = class User extends (
     //1:M = users: comments
     db.User.hasMany(db.Comment);
 
-    //L:K = following : follower
+    //N:M = following : follower
     db.User.belongsToMany(db.User, {
       foreignKey: "followingId",
       as: "Followers",

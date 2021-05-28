@@ -6,7 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { BASE_URL } from "../../../config/config.json";
-import { CommentsData, UserData } from "../../../model/ArticleModel";
+import {
+  CommentsData,
+  HashtagsData,
+  UserData,
+} from "../../../model/ArticleModel";
 import { actions } from "../../../redux/reducer/commentReducer";
 import { actions as postActions } from "../../../redux/reducer/postReducer";
 import { RootState } from "../../../redux/store";
@@ -21,6 +25,7 @@ interface ITuiViewer {
   comments: CommentsData[];
   nick: string;
   User: UserData;
+  Hashtags: HashtagsData[];
 }
 
 export default function TuiViewer({
@@ -31,6 +36,7 @@ export default function TuiViewer({
   id,
   comments,
   nick,
+  Hashtags,
 }: ITuiViewer) {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -94,7 +100,19 @@ export default function TuiViewer({
         <ViewerMainImage src={titleImgUrl} alt="represent image" />
       </ViewerMainImageWrapper>
       <ViewerBottom>
-        <Id>{User.nick}</Id>
+        <>
+          <Id>{User.nick}</Id>
+          <HashTagContainer>
+            {Hashtags.map((tag) => (
+              <HashTagText
+                onClick={() => {
+                  history.push(`/tag/${tag.title}`);
+                  // dispatch(postActions.getHashTagData(tag.title));
+                }}
+              >{`#${tag.title}`}</HashTagText>
+            ))}
+          </HashTagContainer>
+        </>
         <InputWrapper>
           <input
             type="text"
@@ -180,6 +198,16 @@ const InputWrapper = styled.div`
   }
 `;
 
+const HashTagText = styled.span`
+  margin-left: 0.5vw;
+  color: black;
+  transition: all 0.5s ease-in-out;
+  cursor: pointer;
+  &:hover {
+    color: blue;
+  }
+`;
+
 const QuitButton = styled.button`
   background-color: white;
   border: none;
@@ -208,4 +236,8 @@ const EditButton = styled.button`
     color: gray;
     transition: all 0.3s ease-in-out;
   }
+`;
+
+const HashTagContainer = styled.div`
+  display: flex;
 `;

@@ -4,6 +4,7 @@ import commentReducer from "./reducer/commentReducer";
 import loadingReducer from "./reducer/loadingReducer";
 import navReducer from "./reducer/navReducer";
 import postReducer from "./reducer/postReducer";
+import searchReducer from "./reducer/searchReducer";
 import { rootSaga } from "./saga/rootSaga";
 
 const rootReducer = combineReducers({
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   commentReducer,
   postReducer,
   loadingReducer,
+  searchReducer,
 });
 
 //make saga

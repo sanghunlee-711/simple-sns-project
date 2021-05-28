@@ -12,6 +12,19 @@ export interface CommentsData {
   updatedAt: string;
   User: UserData;
 }
+
+export interface HashtagsData {
+  PostHashtag: {
+    HashtagId: number;
+    PostId: number;
+    createdAt: string;
+    updatedAt: string;
+  };
+  createdAt: string;
+  id: number;
+  title: string;
+  updatedAt: string;
+}
 export interface ContentsData {
   id: number;
   title: string;
@@ -22,4 +35,5 @@ export interface ContentsData {
   updatedAt: string;
   User: UserData;
   Comments: CommentsData[];
+  Hashtags: HashtagsData[];
 }

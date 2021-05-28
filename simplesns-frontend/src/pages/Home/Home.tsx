@@ -1,12 +1,17 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import TuiViewer from "../../components/Post/components/TuiViewer";
 import { BASE_URL } from "../../config/config.json";
 import { ContentsData } from "../../model/ArticleModel";
+import { RootState } from "../../redux/store";
 
 export default function Home() {
   const [data, setData] = useState<ContentsData[]>([]);
+  const { searchData, searchInput } = useSelector(
+    (state: RootState) => state.searchReducer
+  );
 
   useEffect(() => {
     getData();
@@ -31,7 +36,16 @@ export default function Home() {
     <HomeContainer>
       <AritcleWrapper>
         {data.map(
-          ({ content, id, title, titleImgUrl, Comments, nick, User }) => (
+          ({
+            content,
+            id,
+            title,
+            titleImgUrl,
+            Comments,
+            nick,
+            User,
+            Hashtags,
+          }) => (
             <TuiViewer
               User={User}
               nick={nick}
@@ -41,6 +55,7 @@ export default function Home() {
               title={title}
               titleImgUrl={titleImgUrl}
               comments={Comments}
+              Hashtags={Hashtags}
             />
           )
         )}
@@ -58,3 +73,5 @@ const AritcleWrapper = styled.section`
   justify-content: space-evenly;
   flex-wrap: wrap;
 `;
+
+const SearchWordHeader = styled.div``;

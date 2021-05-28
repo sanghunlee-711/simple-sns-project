@@ -46,7 +46,7 @@ export const INITIAL_STATE: CommentState = {
 };
 
 //Reducer
-export const navReducer = (
+export const commentReducer = (
   state: CommentState = INITIAL_STATE,
   action: CommentAction
 ) => {
@@ -72,4 +72,4 @@ export const navReducer = (
   }
 };
 
-export default navReducer;
+export default commentReducer;
