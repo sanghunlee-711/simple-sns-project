@@ -19,7 +19,7 @@ export default function Tags() {
   }, []);
 
   return (
-    <HomeContainer onClick={() => console.log(searchData)}>
+    <HomeContainer>
       <SearchWordWrapper>
         <span>
           #{hashTag}로 검색한 결과 총 {searchData.length}개 존재합니다.
