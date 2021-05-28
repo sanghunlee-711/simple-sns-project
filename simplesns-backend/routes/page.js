@@ -92,7 +92,9 @@ router.get("/hashtag/:hashtag", async (req, res, next) => {
       });
     }
 
-    const posts = await hashtag.getPosts({ include: [{ model: User }] });
+    const posts = await hashtag.getPosts({
+      include: [{ model: User }, { model: Comment }],
+    });
 
     return res.json(posts);
   } catch (error) {
