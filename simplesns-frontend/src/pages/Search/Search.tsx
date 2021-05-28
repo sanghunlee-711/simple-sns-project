@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import styled from "styled-components";
+import SearchContents from "../../components/Post/components/SearchContents";
 import { doSearch } from "../../redux/reducer/searchReducer";
 import { RootState } from "../../redux/store";
 
@@ -28,10 +29,13 @@ export default function Search() {
         {searchData &&
           searchData.map(
             ({ content, id, title, titleImgUrl, Comments, nick, User }) => (
-              <>
-                <span>{title}</span>
-                <span>{id}</span>
-              </>
+              <SearchContents
+                id={id}
+                title={title}
+                User={User}
+                Comments={Comments}
+                titleImgUrl={titleImgUrl}
+              />
             )
           )}
       </AritcleWrapper>
@@ -39,10 +43,24 @@ export default function Search() {
   );
 }
 
-const SearchWordWrapper = styled.div``;
+const SearchWordWrapper = styled.div`
+  color: gray;
+  opacity: 0.8;
+  margin-top: 120px;
+  span {
+    width: fit-content;
+    margin: 0 auto;
+    display: block;
+    font-size: 3rem;
+  }
+  width: 100%;
+  margin-bottom: 30px;
+`;
 
 const HomeContainer = styled.main`
-  margin-top: 70px;
+  margin: 70px auto 0px auto;
+  width: 80%;
+  min-height: 100vh;
 `;
 
 const AritcleWrapper = styled.section`
