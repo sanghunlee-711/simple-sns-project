@@ -1,6 +1,7 @@
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import createSagaMiddleware from "redux-saga";
 import commentReducer from "./reducer/commentReducer";
+import followReducer from "./reducer/followReducer";
 import loadingReducer from "./reducer/loadingReducer";
 import navReducer from "./reducer/navReducer";
 import postReducer from "./reducer/postReducer";
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   postReducer,
   loadingReducer,
   searchReducer,
+  followReducer,
 });
 
 //make saga

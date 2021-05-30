@@ -12,6 +12,7 @@ import {
   UserData,
 } from "../../../model/ArticleModel";
 import { actions } from "../../../redux/reducer/commentReducer";
+import { actions as followActions } from "../../../redux/reducer/followReducer";
 import { actions as postActions } from "../../../redux/reducer/postReducer";
 import { RootState } from "../../../redux/store";
 import { config } from "../../../utils/util";
@@ -101,7 +102,18 @@ export default function TuiViewer({
       </ViewerMainImageWrapper>
       <ViewerBottom>
         <>
-          <Id>{User.nick}</Id>
+          <UserWrapper>
+            <Id>{User.nick}</Id>
+            <button
+              onClick={() => {
+                console.log("USER", User.id);
+                console.log("user", userId);
+                dispatch(followActions.sendFollow(User.id));
+              }}
+            >
+              Follow
+            </button>
+          </UserWrapper>
           <HashTagContainer>
             {Hashtags.map((tag) => (
               <HashTagText
@@ -205,6 +217,15 @@ const HashTagText = styled.span`
   cursor: pointer;
   &:hover {
     color: blue;
+  }
+`;
+
+const UserWrapper = styled.div`
+  display: flex;
+  & > div {
+    :nth-child(2) {
+      margin-left: 10px;
+    }
   }
 `;
 
