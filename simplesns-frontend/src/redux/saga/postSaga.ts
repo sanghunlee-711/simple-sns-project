@@ -7,10 +7,9 @@ import { actions as searchActions } from "../reducer/searchReducer";
 
 export function* checkToken() {
   while (true) {
-    yield take(types.CHECK_TOKEN);
-    yield put(loadingActions.setLoading(true));
-
     try {
+      yield take(types.CHECK_TOKEN);
+      yield put(loadingActions.setLoading(true));
       const { data } = yield call(CheckToken);
 
       yield put(actions.getTokenData(data.id, data.nick, true));
@@ -23,10 +22,11 @@ export function* checkToken() {
 
 export function* tryModifyPost() {
   while (true) {
-    const { payload } = yield take(types.PUT_CONTENT_DATA);
-    yield put(loadingActions.setLoading(true));
-    const { postId, changedContent, titleImgUrl, title } = payload;
     try {
+      const { payload } = yield take(types.PUT_CONTENT_DATA);
+      const { postId, changedContent, titleImgUrl, title } = payload;
+
+      yield put(loadingActions.setLoading(true));
       yield call(PutPostData, postId, changedContent, titleImgUrl, title);
     } catch (error) {
       console.error(error);

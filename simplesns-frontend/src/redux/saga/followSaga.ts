@@ -2,7 +2,7 @@ import axios from "axios";
 import { call, put, take } from "redux-saga/effects";
 import { BASE_URL } from "../../config/config.json";
 import { config } from "../../utils/util";
-import { types as followActions } from "../reducer/followReducer";
+import { actions as followActions } from "../reducer/followReducer";
 import { actions as loadingActions } from "../reducer/loadingReducer";
 
 export interface ResponseGenerator {
@@ -33,7 +33,7 @@ const getFollow = () => {
 export function* tryGetFollowData() {
   while (true) {
     try {
-      yield take(followActions.GET_FOLLOW_DATA);
+      yield take(followActions.getFollowData);
       console.log("get ??!");
       const result: ResponseGenerator = yield call(getFollow);
       console.log(result);
@@ -45,7 +45,7 @@ export function* tryGetFollowData() {
 
 export function* tryFollow() {
   while (true) {
-    const { payload } = yield take(followActions.SEND_FOLLOW);
+    const { payload } = yield take(followActions.sendFollow);
     console.log("@@@@@@@@", payload);
 
     yield put(loadingActions.setLoading(true));
