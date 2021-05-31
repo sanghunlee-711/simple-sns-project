@@ -53,13 +53,13 @@ module.exports = class User extends (
     db.User.belongsToMany(db.User, {
       foreignKey: "followingId",
       as: "Followers",
-      through: db.Follow,
+      through: "Follow",
     });
 
     db.User.belongsToMany(db.User, {
       foreignKey: "followerId",
       as: "Followings",
-      through: db.Follow,
+      through: "Follow",
     });
   }
 };

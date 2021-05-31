@@ -3,6 +3,41 @@ const { User, Follow } = require("../models");
 const { verifyToken } = require("./middlewares");
 const router = express.Router();
 
+router.get("/", verifyToken, async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: { email: req.decoded.email },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nick", "email"],
+          as: "Followers",
+        },
+        {
+          model: User,
+          attributes: ["id", "nick", "email"],
+          as: "Followings",
+        },
+      ],
+    });
+    if (!user) {
+      return res.status(404).json({
+        message: "Not Found User",
+        code: 404,
+      });
+    }
+
+    return res.status(200).json({
+      message: "Here is Follower and Following User of You!",
+      data: user,
+      code: 200,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.post("/", verifyToken, async (req, res, next) => {
   // 토큰으로 요청자 인증하고
   //req.body.userId에 팔로우할 타겟아이디 담고
