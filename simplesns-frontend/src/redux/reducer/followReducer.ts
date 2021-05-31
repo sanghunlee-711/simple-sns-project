@@ -2,10 +2,13 @@ interface FollowState {
   followId: number;
 }
 
-type FollowAction = ReturnType<typeof sendFollow>;
+type FollowAction =
+  | ReturnType<typeof sendFollow>
+  | ReturnType<typeof getFollowData>;
 
 export const types = {
-  SEND_FOLLOW: "follow/SENDFOLLOW" as const,
+  SEND_FOLLOW: "follow/SEND_FOLLOW" as const,
+  GET_FOLLOW_DATA: "follow/GET_FOLLOW_DATA" as const,
 };
 
 export const sendFollow = (followId: number) => ({
@@ -13,8 +16,13 @@ export const sendFollow = (followId: number) => ({
   payload: { followId },
 });
 
+export const getFollowData = () => ({
+  type: types.GET_FOLLOW_DATA,
+});
+
 export const actions = {
   sendFollow,
+  getFollowData,
 };
 
 export const INITIAL_STATE: FollowState = {
@@ -26,12 +34,15 @@ export const followReducer = (
   action: FollowAction
 ) => {
   switch (action.type) {
-    case "follow/SENDFOLLOW":
+    case "follow/SEND_FOLLOW":
       console.log("안함??");
       return {
         ...state,
         follwId: action.payload.followId,
       };
+    case "follow/GET_FOLLOW_DATA":
+      return { ...state };
+
     default:
       return state;
   }

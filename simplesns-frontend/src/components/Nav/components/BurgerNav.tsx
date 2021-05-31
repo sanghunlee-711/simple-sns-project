@@ -49,7 +49,13 @@ export default function BurgerNav(): JSX.Element {
         <i className="fas fa-times fa-2x"></i>
       </QuitButton>
       <ProfileContainer>
-        <ProfileWrapper>
+        <ProfileWrapper
+          onClick={() => {
+            if (sessionStorage.getItem("token")) {
+              history.push("/user");
+            }
+          }}
+        >
           <ProfileImage />
           <div>
             <span>안녕하세요!</span>
@@ -158,6 +164,7 @@ const ProfileWrapper = styled.div`
   align-items: center;
   flex-direction: column;
   width: calc(490px * 0.8);
+  cursor: pointer;
 `;
 const ButtonWrapper = styled.div`
   display: flex;

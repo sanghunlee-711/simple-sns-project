@@ -3,23 +3,26 @@ const { User, Follow } = require("../models");
 const { verifyToken } = require("./middlewares");
 const router = express.Router();
 
-router.get("/", verifyToken, async (req, res, next) => {
+router.get("/list", verifyToken, async (req, res, next) => {
   try {
+    console.log("@@@@@@@@@@@@@@", req.decoded.email);
+
     const user = await User.findOne({
       where: { email: req.decoded.email },
       include: [
         {
           model: User,
-          attributes: ["id", "nick", "email"],
+          attributes: ["id", "nick"],
           as: "Followers",
         },
         {
           model: User,
-          attributes: ["id", "nick", "email"],
+          attributes: ["id", "nick"],
           as: "Followings",
         },
       ],
     });
+
     if (!user) {
       return res.status(404).json({
         message: "Not Found User",
@@ -27,11 +30,7 @@ router.get("/", verifyToken, async (req, res, next) => {
       });
     }
 
-    return res.status(200).json({
-      message: "Here is Follower and Following User of You!",
-      data: user,
-      code: 200,
-    });
+    return res.json(user);
   } catch (error) {
     console.error(error);
     next(error);
@@ -91,4 +90,5 @@ router.post("/", verifyToken, async (req, res, next) => {
     next(error);
   }
 });
+
 module.exports = router;
