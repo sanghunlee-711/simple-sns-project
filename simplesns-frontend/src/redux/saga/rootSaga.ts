@@ -1,5 +1,6 @@
 import { spawn } from "redux-saga/effects";
 import { tryDeleteComment, tryPostComment, tryPutComment } from "./commentSaga";
+import { tryFollow, tryGetFollowData } from "./followSaga";
 import { checkToken, getHashtagData, tryModifyPost } from "./postSaga";
 import { getSearchData } from "./searchSaga";
 
@@ -16,4 +17,8 @@ export function* rootSaga() {
 
   //search
   yield spawn(getSearchData);
+
+  //follow
+  yield spawn(tryFollow);
+  yield spawn(tryGetFollowData);
 }

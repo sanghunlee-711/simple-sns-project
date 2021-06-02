@@ -22,7 +22,6 @@ export const PutPostData = async (
 
 export const GetHashTagData = async (hashTagText: string) => {
   const params = hashTagText;
-  console.log("?????", hashTagText);
   const url = `${BASE_URL}/hashtag/`;
 
   const response = await axios.get(url + params, config);

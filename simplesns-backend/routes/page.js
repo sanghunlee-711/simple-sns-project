@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { Post, User, Hashtag, Comment } = require("../models");
+const { Post, User, Hashtag, Comment, Follow } = require("../models");
 const { checkS3, deleteInvalidImg, verifyToken } = require("./middlewares");
 const router = express.Router();
 const sequelize = require("sequelize");
@@ -18,7 +18,6 @@ router.get("/", async (req, res, next) => {
         {
           model: Hashtag,
         },
-
         {
           model: Comment,
           attributes: ["PostId", "comment", "createdAt", "updatedAt", "id"],
@@ -42,6 +41,8 @@ router.get("/", async (req, res, next) => {
     next(error);
   }
 });
+
+// Grant.findAll({ include: User });
 
 router.get("/:search", async (req, res, next) => {
   try {

@@ -9,6 +9,7 @@ import Login from "../pages/Login/Login";
 import Modify from "../pages/Modify/Modify";
 import Search from "../pages/Search/Search";
 import Tags from "../pages/Tags/Tags";
+import User from "../pages/User/User";
 
 const RootRouter: React.FC = () => {
   return (
@@ -22,6 +23,7 @@ const RootRouter: React.FC = () => {
         <Route exact path="/modify" component={Modify} />
         <Route exact path="/search/:searchWord" component={Search} />
         <Route exact path="/tag/:hashTag" component={Tags} />
+        <Route exact path="/user" component={User} />
       </Switch>
       <Footer />
     </BrowserRouter>

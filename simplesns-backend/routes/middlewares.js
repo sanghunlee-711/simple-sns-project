@@ -133,8 +133,10 @@ exports.checkHashTag = async (req, res, next) => {
     if (req.body.content) {
       //해시태그 추출을 위한 정규표현식
       const hashtags = req.body.content.match(/#[^\s#<>]+/g);
+      console.log("무슨 해시태그 아니어도 다 읽는 거니?..", hashtags);
+      if (hashtags && req.hashtags !== null) {
+        console.log("무슨 해시태그 아니어도 그런거니 ?", hashtags);
 
-      if (hashtags) {
         const result = await Promise.all(
           hashtags.map((tag) => {
             return Hashtag.findOrCreate({
@@ -142,10 +144,14 @@ exports.checkHashTag = async (req, res, next) => {
             });
           })
         );
+
         req.hashtags = result;
+        next();
+      } else {
         next();
       }
     } else {
+      console.log("해시태그 넥스트함 해시태그 없을 때");
       next();
     }
   } catch (error) {
