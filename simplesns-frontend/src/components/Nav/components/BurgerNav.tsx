@@ -52,8 +52,10 @@ export default function BurgerNav(): JSX.Element {
         <ProfileWrapper
           onClick={() => {
             if (sessionStorage.getItem("token")) {
-              console.log("/...?");
-              history.push("/user");
+              history.push(`/user`);
+            } else {
+              history.push(`/`);
+              dispatch(toggleBurger(!burgerToggle));
             }
           }}
         >

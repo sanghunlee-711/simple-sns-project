@@ -23,7 +23,7 @@ const RootRouter: React.FC = () => {
         <Route exact path="/modify" component={Modify} />
         <Route exact path="/search/:searchWord" component={Search} />
         <Route exact path="/tag/:hashTag" component={Tags} />
-        <Route exact path="/user" component={User} />
+        <Route exact path="/user/:userId?" component={User} />
       </Switch>
       <Footer />
     </BrowserRouter>

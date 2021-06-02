@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
 import styled from "styled-components";
-import { actions as FollowActions } from "../../redux/reducer/followReducer";
-
+import { getFollowData } from "../../redux/reducer/followReducer";
+import { RootState } from "../../redux/store";
+import UserCard from "./components/UserCard";
 interface FollowData {
   id: number;
   email: string;
@@ -15,17 +17,60 @@ interface FollowList {
 }
 
 export default function User() {
+  const { userId } = useParams<{ userId: string }>();
+  const userData: FollowList = useSelector(
+    (state: RootState) => state.followReducer.followData
+  );
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(FollowActions.getFollowData());
+    console.log("hello", userId);
+    dispatch(getFollowData());
   }, []);
 
-  return <HomeContainer>UserPage!</HomeContainer>;
+  return (
+    <HomeContainer
+      onClick={() => {
+        console.log(userData);
+      }}
+    >
+      <HomeWrapper>
+        <FollowersContainer>
+          {userData?.Followers?.map(({ id, email, nick }) => (
+            <UserCard userId={String(id)} email={email} nick={nick} />
+          ))}
+        </FollowersContainer>
+        <FollowingContainer>
+          {userData?.Followings?.length <= 0 ? (
+            <div>아무도 팔로잉 하지 않네</div>
+          ) : (
+            userData?.Followings?.map(({ id, email, nick }) => (
+              <UserCard userId={String(id)} email={email} nick={nick} />
+            ))
+          )}
+        </FollowingContainer>
+      </HomeWrapper>
+    </HomeContainer>
+  );
 }
 
 const HomeContainer = styled.main`
-  margin: 70px auto 0px auto;
+  margin: 90px auto 0px auto;
   width: 80%;
   min-height: 100vh;
 `;
+
+const HomeWrapper = styled.div`
+  display: flex;
+`;
+
+const FollowersContainer = styled.div`
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const FollowingContainer = styled(FollowersContainer)``;
