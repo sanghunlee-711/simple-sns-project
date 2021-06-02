@@ -79,6 +79,12 @@ router.post(
       const images = req.body.content.match(
         /<img[^>]*src=[\"']?([^>\"']+)[\"']?[^>]*>/g
       );
+      if (!images) {
+        return res.status(400).json({
+          message: "이게 왜 안되지 ?..",
+          code: 400,
+        });
+      }
       const images_s3_url = images.map((el) => {
         if (el.includes("cloudleesimplesns.s3")) {
           return el.match(/src\s*=\s*"(.+?)"/g);
@@ -104,7 +110,8 @@ router.post(
       }
 
       //해시태그 존재 체크
-      if (req.hashtags) {
+      if (req.hashtags && req.hashtags !== null) {
+        console.log("해시태그 없는데 들어오니 ?..");
         const result = req.hashtags;
 
         await post.addHashtags(result.map((r) => r[0]));

@@ -12,13 +12,27 @@ router.get("/list", verifyToken, async (req, res, next) => {
       include: [
         {
           model: User,
-          attributes: ["id", "nick"],
           as: "Followers",
+          attributes: {
+            include: ["id", "nick"],
+            //Follow가 exclude 되지않는 이유를 찾아야한다.
+            exclude: ["Follow", "password", "snsId", "provider"],
+          },
+          through: {
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+          },
         },
         {
           model: User,
-          attributes: ["id", "nick"],
           as: "Followings",
+          attributes: {
+            include: ["id", "nick"],
+            //Follow가 exclude 되지않는 이유를 찾아야한다.
+            exclude: ["Follow", "password", "snsId", "provider"],
+          },
+          through: {
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+          },
         },
       ],
     });
@@ -29,8 +43,9 @@ router.get("/list", verifyToken, async (req, res, next) => {
         code: 404,
       });
     }
-
-    return res.json(user);
+    const _FollowersData = user.getDataValue("Followers");
+    const _FollowingsData = user.getDataValue("Followings");
+    return res.json({ Followers: _FollowersData, Followings: _FollowingsData });
   } catch (error) {
     console.error(error);
     next(error);
