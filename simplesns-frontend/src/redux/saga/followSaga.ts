@@ -4,7 +4,7 @@ import { BASE_URL } from "../../config/config.json";
 import { config } from "../../utils/util";
 import {
   actions as followActions,
-  types as followTypes,
+  types as followTypes
 } from "../reducer/followReducer";
 import { actions as loadingActions } from "../reducer/loadingReducer";
 
@@ -26,24 +26,22 @@ const doFollow = (followId: number) => {
   return axios.post(url, body, config);
 };
 
-const getFollow = () => {
-  const url = `${BASE_URL}/follow/list`;
+const getFollow = (userId: number) => {
+  let url = `${BASE_URL}/follow/list`;
+  if (userId) {
+    url += `/${userId}`;
+  }
+  
   console.log("URL HERE", url, config);
-  return axios.get(url, config);
-};
-
-const getUserPersonalPageData = () => {
-  const url = `${BASE_URL}/follow/userData`;
-
   return axios.get(url, config);
 };
 
 export function* tryGetFollowData() {
   while (true) {
     try {
-      yield take(followTypes.GET_FOLLOW_DATA);
-      console.log("work??...");
-      const result: ResponseGenerator = yield call(getFollow);
+      const { payload } = yield take(followTypes.GET_FOLLOW_DATA);
+      console.log("@@@@@@", payload);
+      const result: ResponseGenerator = yield call(getFollow, payload.userId);
       console.log(result);
       yield put(followActions.saveFollowData(result.data));
     } catch (error) {

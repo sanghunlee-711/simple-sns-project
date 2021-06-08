@@ -102,11 +102,12 @@ export default function TuiViewer({
       <ViewerBottom>
         <>
           <UserWrapper>
-            <Id>{User.nick}</Id>
+            <Id onClick={() => history.push(`/user/${id}`)}>{User.nick}</Id>
           </UserWrapper>
           <HashTagContainer>
-            {Hashtags.map((tag) => (
+            {Hashtags.map((tag, index) => (
               <HashTagText
+                key={tag.title + index}
                 onClick={() => {
                   history.push(`/tag/${tag.title}`);
                   // dispatch(postActions.getHashTagData(tag.title));

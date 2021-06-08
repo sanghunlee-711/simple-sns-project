@@ -26,7 +26,9 @@ export default function User() {
 
   useEffect(() => {
     console.log("hello", userId);
-    dispatch(getFollowData());
+    if (userId) {
+      dispatch(getFollowData(Number(userId)));
+    }
   }, []);
 
   return (
@@ -37,9 +39,13 @@ export default function User() {
     >
       <HomeWrapper>
         <FollowersContainer>
-          {userData?.Followers?.map(({ id, email, nick }) => (
-            <UserCard userId={String(id)} email={email} nick={nick} />
-          ))}
+          {userData?.Followers.length <= 0 ? (
+            <div>아무도 팔로우 하지 않네</div>
+          ) : (
+            userData?.Followers?.map(({ id, email, nick }) => (
+              <UserCard userId={String(id)} email={email} nick={nick} />
+            ))
+          )}
         </FollowersContainer>
         <FollowingContainer>
           {userData?.Followings?.length <= 0 ? (
