@@ -102,7 +102,9 @@ export default function TuiViewer({
       <ViewerBottom>
         <>
           <UserWrapper>
-            <Id onClick={() => history.push(`/user/${id}`)}>{User.nick}</Id>
+            <Id onClick={() => history.push(`/user/${User.id}`)}>
+              {User.nick}
+            </Id>
           </UserWrapper>
           <HashTagContainer>
             {Hashtags.map((tag, index) => (
