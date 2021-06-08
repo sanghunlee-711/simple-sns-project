@@ -66,6 +66,7 @@ router.post(
   getUserId,
   checkHashTag,
   upload2.none(),
+
   async (req, res, next) => {
     try {
       const post = await Post.create({

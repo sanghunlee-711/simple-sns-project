@@ -3,39 +3,73 @@ const { User, Follow } = require("../models");
 const { verifyToken } = require("./middlewares");
 const router = express.Router();
 
-router.get("/list", verifyToken, async (req, res, next) => {
+router.get("/list/:userId", verifyToken, async (req, res, next) => {
   try {
-    console.log("@@@@@@@@@@@@@@", req.decoded.email);
+    // console.log("@@@@@@@@@@@@@@", req.decoded.email);
+    console.log("!@!@!@!@!@!@", req.params.userId);
+    let user;
 
-    const user = await User.findOne({
-      where: { email: req.decoded.email },
-      include: [
-        {
-          model: User,
-          as: "Followers",
-          attributes: {
-            include: ["id", "nick"],
-            //Follow가 exclude 되지않는 이유를 찾아야한다.
-            exclude: ["Follow", "password", "snsId", "provider"],
+    if (req.params.userId) {
+      user = await User.findOne({
+        where: { id: req.params.userId },
+        include: [
+          {
+            model: User,
+            as: "Followers",
+            attributes: {
+              include: ["id", "nick"],
+              //Follow가 exclude 되지않는 이유를 찾아야한다.
+              exclude: ["Follow", "password", "snsId", "provider"],
+            },
+            through: {
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+            },
           },
-          through: {
-            attributes: { exclude: ["createdAt", "updatedAt"] },
+          {
+            model: User,
+            as: "Followings",
+            attributes: {
+              include: ["id", "nick"],
+              //Follow가 exclude 되지않는 이유를 찾아야한다.
+              exclude: ["Follow", "password", "snsId", "provider"],
+            },
+            through: {
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+            },
           },
-        },
-        {
-          model: User,
-          as: "Followings",
-          attributes: {
-            include: ["id", "nick"],
-            //Follow가 exclude 되지않는 이유를 찾아야한다.
-            exclude: ["Follow", "password", "snsId", "provider"],
+        ],
+      });
+    } else {
+      user = await User.findOne({
+        where: { email: req.decoded.email },
+        include: [
+          {
+            model: User,
+            as: "Followers",
+            attributes: {
+              include: ["id", "nick"],
+              //Follow가 exclude 되지않는 이유를 찾아야한다.
+              exclude: ["Follow", "password", "snsId", "provider"],
+            },
+            through: {
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+            },
           },
-          through: {
-            attributes: { exclude: ["createdAt", "updatedAt"] },
+          {
+            model: User,
+            as: "Followings",
+            attributes: {
+              include: ["id", "nick"],
+              //Follow가 exclude 되지않는 이유를 찾아야한다.
+              exclude: ["Follow", "password", "snsId", "provider"],
+            },
+            through: {
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+            },
           },
-        },
-      ],
-    });
+        ],
+      });
+    }
 
     if (!user) {
       return res.status(404).json({
