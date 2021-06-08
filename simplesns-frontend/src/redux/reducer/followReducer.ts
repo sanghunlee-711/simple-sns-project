@@ -2,6 +2,7 @@ import { FollowList } from "../../model/followModel";
 interface FollowState {
   followId: number;
   followData: FollowList;
+  userId: number | undefined;
 }
 
 type FollowAction =
@@ -20,8 +21,9 @@ export const sendFollow = (followId: number) => ({
   payload: { followId },
 });
 
-export const getFollowData = () => ({
+export const getFollowData = (userId?: number) => ({
   type: types.GET_FOLLOW_DATA,
+  payload: { userId },
 });
 
 export const saveFollowData = (data: FollowList) => ({
@@ -38,6 +40,7 @@ export const actions = {
 export const INITIAL_STATE: FollowState = {
   followId: 0,
   followData: { Followers: [], Followings: [] },
+  userId: 0,
 };
 
 export const followReducer = (
@@ -52,7 +55,7 @@ export const followReducer = (
         follwId: action.payload.followId,
       };
     case "follow/GET_FOLLOW_DATA":
-      return { ...state };
+      return { ...state, userId: action.payload.userId };
 
     case "follow/SAVE_FOLLOW_DATA":
       return { ...state, followData: action.payload };

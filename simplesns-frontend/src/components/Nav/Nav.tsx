@@ -39,7 +39,7 @@ export default function Nav(): JSX.Element {
                   history.push(`/search/${searchWord}`);
                 }}
               >
-                Search!
+                Search With Title
               </button>
             </SearchWrapper>
             <PostButton
@@ -74,12 +74,29 @@ export default function Nav(): JSX.Element {
 const NavButtonWrapper = styled.div`
   display: flex;
   width: fit-content;
-  button {
+  & > button {
     margin-right: 3vw;
   }
 `;
 
-const SearchWrapper = styled.div``;
+const SearchWrapper = styled.div`
+  & > input {
+    margin-right: 10px;
+    height: 4vh;
+  }
+
+  & > button {
+    border: 1px solid black;
+    background-color: white;
+    transition: all 0.5s ease-in-out;
+    height: 4vh;
+
+    &:hover {
+      color: white;
+      background-color: black;
+    }
+  }
+`;
 
 const BurgerButtonWrapper = styled.div``;
 

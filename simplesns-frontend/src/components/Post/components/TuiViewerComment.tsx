@@ -27,10 +27,10 @@ export default function TuiViewerComment({ comments }: ICommentData) {
 
   return (
     <>
-      {comments.map(({ comment, User, id }) => (
+      {comments.map(({ comment, User, id }, index) => (
         <>
           {User.id === userId && changeToggle && id === toggleId ? (
-            <ChangeCommentContainer>
+            <ChangeCommentContainer key={User.nick + id + index}>
               <CommentsWrapper>
                 <span>{User.nick}</span>
                 <input
