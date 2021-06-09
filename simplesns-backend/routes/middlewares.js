@@ -23,6 +23,7 @@ const { post } = require("./page");
 
 exports.verifyToken = async (req, res, next) => {
   try {
+    console.log("에러 여기서 나냐");
     req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
 
     return next();
