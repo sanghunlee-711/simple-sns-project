@@ -4,7 +4,7 @@ import { BASE_URL } from "../../config/config.json";
 import { config } from "../../utils/util";
 import {
   actions as followActions,
-  types as followTypes
+  types as followTypes,
 } from "../reducer/followReducer";
 import { actions as loadingActions } from "../reducer/loadingReducer";
 
@@ -26,13 +26,9 @@ const doFollow = (followId: number) => {
   return axios.post(url, body, config);
 };
 
-const getFollow = (userId: number) => {
-  let url = `${BASE_URL}/follow/list`;
-  if (userId) {
-    url += `/${userId}`;
-  }
-  
-  console.log("URL HERE", url, config);
+const getFollow = (userId: string) => {
+  let url = `${BASE_URL}/follow/list/${userId}`;
+
   return axios.get(url, config);
 };
 

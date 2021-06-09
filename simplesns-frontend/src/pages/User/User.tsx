@@ -27,9 +27,13 @@ export default function User() {
   useEffect(() => {
     console.log("hello", userId);
     if (userId) {
-      dispatch(getFollowData(Number(userId)));
+      dispatch(getFollowData(userId));
     }
   }, []);
+
+  const handleFollow = () => {
+    console.log("follow Check");
+  };
 
   return (
     <HomeContainer
@@ -37,6 +41,10 @@ export default function User() {
         console.log(userData);
       }}
     >
+      <ButtonContainer onClick={() => handleFollow()}>
+        <button>팔로우 하기</button>
+        <button>팔로우 끊기</button>
+      </ButtonContainer>
       <HomeWrapper>
         <FollowersContainer>
           {userData?.Followers.length <= 0 ? (
@@ -80,3 +88,11 @@ const FollowersContainer = styled.div`
 `;
 
 const FollowingContainer = styled(FollowersContainer)``;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60%;
+  margin: 10px auto;
+`;
