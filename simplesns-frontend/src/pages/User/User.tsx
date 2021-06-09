@@ -2,7 +2,11 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import styled from "styled-components";
-import { getFollowData } from "../../redux/reducer/followReducer";
+import {
+  getFollowData,
+  sendFollow,
+  sendUnFollow,
+} from "../../redux/reducer/followReducer";
 import { RootState } from "../../redux/store";
 import UserCard from "./components/UserCard";
 interface FollowData {
@@ -31,7 +35,16 @@ export default function User() {
     }
   }, []);
 
-  const handleFollow = () => {
+  const handleFollow = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const { name, value } = e.target as HTMLButtonElement;
+    if (name === "follow") {
+      dispatch(sendFollow(Number(value)));
+    }
+
+    if (name === "unFollow") {
+      dispatch(sendUnFollow(Number(value)));
+    }
+
     console.log("follow Check");
   };
 
@@ -41,9 +54,19 @@ export default function User() {
         console.log(userData);
       }}
     >
-      <ButtonContainer onClick={() => handleFollow()}>
-        <button>팔로우 하기</button>
-        <button>팔로우 끊기</button>
+      <ButtonContainer>
+        <button
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleFollow(e)}
+          name="follow"
+        >
+          팔로우 하기
+        </button>
+        <button
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleFollow(e)}
+          name="unFollow"
+        >
+          팔로우 끊기
+        </button>
       </ButtonContainer>
       <HomeWrapper>
         <FollowersContainer>
