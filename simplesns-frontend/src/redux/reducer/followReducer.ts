@@ -2,7 +2,7 @@ import { FollowList } from "../../model/followModel";
 interface FollowState {
   followId: number;
   followData: FollowList;
-  userId: number | undefined;
+  userId: string;
 }
 
 type FollowAction =
@@ -21,7 +21,7 @@ export const sendFollow = (followId: number) => ({
   payload: { followId },
 });
 
-export const getFollowData = (userId?: number) => ({
+export const getFollowData = (userId: string) => ({
   type: types.GET_FOLLOW_DATA,
   payload: { userId },
 });
@@ -40,7 +40,7 @@ export const actions = {
 export const INITIAL_STATE: FollowState = {
   followId: 0,
   followData: { Followers: [], Followings: [] },
-  userId: 0,
+  userId: "0",
 };
 
 export const followReducer = (
@@ -49,7 +49,6 @@ export const followReducer = (
 ) => {
   switch (action.type) {
     case "follow/SEND_FOLLOW":
-      console.log("안함??");
       return {
         ...state,
         follwId: action.payload.followId,
