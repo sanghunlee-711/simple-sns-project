@@ -113,6 +113,7 @@ router.post("/", verifyToken, async (req, res, next) => {
 
 router.post("/unfollow", verifyToken, async (req, res, next) => {
   try {
+    console.log;
     const user = await User.findOne({
       attributes: ["id"],
       where: {
@@ -120,7 +121,9 @@ router.post("/unfollow", verifyToken, async (req, res, next) => {
       },
     });
 
-    const _removeFollow = await user.removeFollow(req.body.followId.followId);
+    const _removeFollow = await user.removeFollowing(
+      req.body.unFollowId.unfollowId
+    );
 
     if (_removeFollow) {
       return res.status(404).json({

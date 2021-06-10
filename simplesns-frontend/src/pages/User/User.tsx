@@ -33,6 +33,9 @@ export default function User() {
     if (userId) {
       dispatch(getFollowData(userId));
     }
+
+    if (sessionStorage.getItem("userId") !== userId) {
+    }
   }, []);
 
   const handleFollow = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -54,36 +57,32 @@ export default function User() {
         console.log(userData);
       }}
     >
-      <ButtonContainer>
-        <button
-          onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleFollow(e)}
-          name="follow"
-        >
-          팔로우 하기
-        </button>
-        <button
-          onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleFollow(e)}
-          name="unFollow"
-        >
-          팔로우 끊기
-        </button>
-      </ButtonContainer>
       <HomeWrapper>
         <FollowersContainer>
           {userData?.Followers.length <= 0 ? (
-            <div>아무도 팔로우 하지 않네</div>
+            <div>나를 아무도 팔로우 하지 않네</div>
           ) : (
             userData?.Followers?.map(({ id, email, nick }) => (
-              <UserCard userId={String(id)} email={email} nick={nick} />
+              <UserCard
+                userId={String(id)}
+                email={email}
+                nick={nick}
+                delimiter={"Followers"}
+              />
             ))
           )}
         </FollowersContainer>
         <FollowingContainer>
           {userData?.Followings?.length <= 0 ? (
-            <div>아무도 팔로잉 하지 않네</div>
+            <div>아무도 내가 팔로잉 하지 않네</div>
           ) : (
             userData?.Followings?.map(({ id, email, nick }) => (
-              <UserCard userId={String(id)} email={email} nick={nick} />
+              <UserCard
+                userId={String(id)}
+                email={email}
+                nick={nick}
+                delimiter={"Followings"}
+              />
             ))
           )}
         </FollowingContainer>

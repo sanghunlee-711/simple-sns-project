@@ -28,10 +28,8 @@ const doFollow = (followId: number) => {
 
 const doUnFollow = (unFollowId: number) => {
   const url = `${BASE_URL}/follow/unfollow`;
-  const body = {
-    unFollowId,
-  };
-  return axios.post(url, body, config);
+
+  return axios.post(url, { unFollowId }, config);
 };
 
 const getFollow = (userId: string) => {
