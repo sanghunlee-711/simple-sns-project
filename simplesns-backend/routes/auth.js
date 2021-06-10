@@ -59,6 +59,7 @@ router.post("/login", async (req, res, next) => {
     }
     const result = await bcrypt.compare(password, user.password);
     const nick = user.nick;
+    const userId = user.id;
     if (result) {
       const token = jwt.sign(
         {
@@ -71,13 +72,15 @@ router.post("/login", async (req, res, next) => {
           issuer: "SimpleSns",
         }
       );
+      console.log("@@@", userId);
 
       return res.json({
         code: 200,
         message: "토큰이 발급 되었습니다.",
-        email: email,
+        email,
         nick,
         token,
+        userId,
       });
     } else {
       return res.json({

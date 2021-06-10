@@ -26,6 +26,12 @@ const doFollow = (followId: number) => {
   return axios.post(url, body, config);
 };
 
+const doUnFollow = (unFollowId: number) => {
+  const url = `${BASE_URL}/follow/unfollow`;
+
+  return axios.post(url, { unFollowId }, config);
+};
+
 const getFollow = (userId: string) => {
   let url = `${BASE_URL}/follow/list/${userId}`;
 
@@ -56,16 +62,23 @@ export function* tryFollow() {
       yield call(doFollow, payload);
     } catch (error) {
       console.error(error);
+    } finally {
+      yield put(loadingActions.setLoading(false));
     }
-    yield put(loadingActions.setLoading(false));
   }
 }
 
-export function* tryGetUserPersonalPageData() {
+export function* tryUnFollow() {
   while (true) {
     try {
+      const { payload } = yield take(followTypes.SEND_UNFOLLOW);
+
+      yield put(loadingActions.setLoading(true));
+      yield call(doUnFollow, payload);
     } catch (error) {
       console.error(error);
+    } finally {
+      yield put(loadingActions.setLoading(false));
     }
   }
 }

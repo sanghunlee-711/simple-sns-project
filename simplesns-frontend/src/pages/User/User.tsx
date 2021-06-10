@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import styled from "styled-components";
-import { getFollowData } from "../../redux/reducer/followReducer";
+import { getFollowData, sendFollow } from "../../redux/reducer/followReducer";
 import { RootState } from "../../redux/store";
 import UserCard from "./components/UserCard";
 interface FollowData {
@@ -18,6 +18,7 @@ interface FollowList {
 
 export default function User() {
   const { userId } = useParams<{ userId: string }>();
+  const history = useHistory();
   const userData: FollowList = useSelector(
     (state: RootState) => state.followReducer.followData
   );
@@ -29,10 +30,14 @@ export default function User() {
     if (userId) {
       dispatch(getFollowData(userId));
     }
+
+    if (sessionStorage.getItem("userId") === undefined) {
+      return history.push("/");
+    }
   }, []);
 
   const handleFollow = () => {
-    console.log("follow Check");
+    dispatch(sendFollow(Number(userId)));
   };
 
   return (
@@ -41,26 +46,47 @@ export default function User() {
         console.log(userData);
       }}
     >
-      <ButtonContainer onClick={() => handleFollow()}>
-        <button>팔로우 하기</button>
-        <button>팔로우 끊기</button>
-      </ButtonContainer>
       <HomeWrapper>
+        {Number(sessionStorage.getItem("userId")) !== Number(userId) &&
+        userId !== "my" ? (
+          <FollowButtonWrapper>
+            <button
+              onClick={() => {
+                handleFollow();
+              }}
+            >
+              얘를 팔로우 하자
+            </button>
+          </FollowButtonWrapper>
+        ) : (
+          ""
+        )}
+
         <FollowersContainer>
           {userData?.Followers.length <= 0 ? (
-            <div>아무도 팔로우 하지 않네</div>
+            <div>나를 아무도 팔로우 하지 않네</div>
           ) : (
             userData?.Followers?.map(({ id, email, nick }) => (
-              <UserCard userId={String(id)} email={email} nick={nick} />
+              <UserCard
+                userId={String(id)}
+                email={email}
+                nick={nick}
+                delimiter={"Followers"}
+              />
             ))
           )}
         </FollowersContainer>
         <FollowingContainer>
           {userData?.Followings?.length <= 0 ? (
-            <div>아무도 팔로잉 하지 않네</div>
+            <div>아무도 내가 팔로잉 하지 않네</div>
           ) : (
             userData?.Followings?.map(({ id, email, nick }) => (
-              <UserCard userId={String(id)} email={email} nick={nick} />
+              <UserCard
+                userId={String(id)}
+                email={email}
+                nick={nick}
+                delimiter={"Followings"}
+              />
             ))
           )}
         </FollowingContainer>
@@ -68,6 +94,8 @@ export default function User() {
     </HomeContainer>
   );
 }
+
+const FollowButtonWrapper = styled.div``;
 
 const HomeContainer = styled.main`
   margin: 90px auto 0px auto;
